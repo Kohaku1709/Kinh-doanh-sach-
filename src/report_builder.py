@@ -2,7 +2,6 @@
 from pathlib import Path
 import html
 import pandas as pd
-import matplotlib
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib import colors
@@ -129,17 +128,45 @@ def build_report(root,d,t,m,v,stages,exp,recovery):
         'Tái lập: Python 3.12; cài requirements.txt (hoặc requirements-lock.txt để dùng toàn bộ phiên bản đã kiểm thử); chạy python run.py --replications 50; chạy python -m pytest -q; chạy python tools/execute_notebook.py. Notebook đọc dữ liệu nguồn và gọi chung hàm xử lý, sau đó đối soát với CSV được pipeline xuất.',
         'README.md là điểm bắt đầu; docs/QUY-TRINH.md mô tả phương pháp; data/data_dictionary.md định nghĩa trường; docs/DOI-SOAT-BAN-CU.md lưu các số tính lại từ bản gốc; docs/PHAN-VIEC-NHOM.md ghi phần công việc cần nhóm cung cấp. Các nguồn phương pháp trên không chứng minh tính đại diện của dữ liệu.'
     ])
-    write_outputs(root,sections)
+    from .academic_report import enrich
+    write_outputs(root,enrich(sections))
 
 
 def write_outputs(root,sections):
-    fonts=Path(matplotlib.get_data_path())/'fonts/ttf'
-    for name,file in [('DV','DejaVuSans.ttf'),('DVB','DejaVuSans-Bold.ttf')]:pdfmetrics.registerFont(TTFont(name,str(fonts/file)))
+    import os
+    fonts=Path(os.environ.get('WINDIR',''))/'Fonts'
+    regular,bold='times.ttf','timesbd.ttf'
+    if not (fonts/regular).exists():
+        import matplotlib
+        fonts=Path(matplotlib.get_data_path())/'fonts/ttf'
+        regular,bold='DejaVuSerif.ttf','DejaVuSerif-Bold.ttf'
+    for name,file in [('DV',regular),('DVB',bold)]:pdfmetrics.registerFont(TTFont(name,str(fonts/file)))
     pdfmetrics.registerFontFamily('DV',normal='DV',bold='DVB',italic='DV',boldItalic='DVB')
     styles={'title':ParagraphStyle('title',fontName='DVB',fontSize=19,leading=25,textColor=colors.HexColor('#173e56'),spaceAfter=18),'body':ParagraphStyle('body',fontName='DV',fontSize=10,leading=15,spaceAfter=10),'cell':ParagraphStyle('cell',fontName='DV',fontSize=8,leading=11),'head':ParagraphStyle('head',fontName='DVB',fontSize=8,leading=11,textColor=colors.white)}
-    story=[];md=[];web=[]
+    from reportlab.platypus.tableofcontents import TableOfContents
+    class AcademicDocument(SimpleDocTemplate):
+        def afterFlowable(self, flowable):
+            if isinstance(flowable, Paragraph) and flowable.style.name == 'title':
+                self.notify('TOCEntry', (0, flowable.getPlainText(), self.page))
+    styles['title'].textColor = colors.black
+    styles['title'].fontSize = 16
+    styles['title'].leading = 22
+    styles['body'].fontSize = 11
+    styles['body'].leading = 16
+    styles['body'].spaceAfter = 8
+    styles['body'].alignment = 4
+    styles['title'].keepWithNext = True
+    styles['caption'] = ParagraphStyle('caption',parent=styles['body'],keepWithNext=True)
+    cover = ParagraphStyle('cover',fontName='DVB',fontSize=21,leading=30,alignment=1,spaceAfter=25)
+    story=[Spacer(1,95),Paragraph('BÁO CÁO HỌC PHẦN<br/>KHOA HỌC DỮ LIỆU',cover),Spacer(1,35),Paragraph('XÂY DỰNG BỘ DỮ LIỆU KINH DOANH SÁCH<br/>XỬ LÝ VÀ TRỰC QUAN HÓA DỮ LIỆU',cover),Spacer(1,25),Paragraph('Nghiên cứu mô phỏng và phân tích ý nghĩa kinh doanh',styles['body']),Spacer(1,100),Paragraph('Tháng 11 năm 2026',cover),PageBreak(),Paragraph('MỤC LỤC',cover)]
+    toc=TableOfContents()
+    toc.levelStyles=[ParagraphStyle('toc',fontName='DV',fontSize=10,leading=15,spaceAfter=5)]
+    story.extend([toc,PageBreak()])
+    md=[];web=[]
+    figure_number=0
+    table_number=0
     for i,s in enumerate(sections):
-        if i:story.append(PageBreak())
+        if i and (s['title'].startswith(('Chương','Tài liệu','Phụ lục','4.7'))):story.append(PageBreak())
         story.append(Paragraph(html.escape(s['title']),styles['title']))
         md.append('# '+s['title']+'\n');web.append('<section><h1>'+html.escape(s['title'])+'</h1>')
         for p in s['paras']:
@@ -147,18 +174,23 @@ def write_outputs(root,sections):
         if s['chart']:
             from PIL import Image as PILImage
             path=root/'charts'/s['chart'];w,h=PILImage.open(path).size
-            story.append(Image(str(path),width=480,height=480*h/w));story.append(Spacer(1,10))
+            figure_number+=1
+            caption=f'Hình {figure_number}. {s["title"].split(" ",1)[-1]}. Nguồn tính toán từ dữ liệu mô phỏng của đề tài.'
+            story.append(KeepTogether([Image(str(path),width=min(440,300*w/h),height=min(300,440*h/w)),Spacer(1,6),Paragraph(caption,styles['cell']),Spacer(1,14)]))
             md.append(f'![{s["title"]}](../charts/{s["chart"]})\n');web.append(f'<img alt="{html.escape(s["title"])}" src="../charts/{s["chart"]}">')
         if s['table']:
+            table_number+=1
+            table_caption=Paragraph(f'Bảng {table_number}. {s["title"]}',styles['caption'])
             data=s['table'];widths=[480/len(data[0])]*len(data[0])
             cells=[[Paragraph(html.escape(str(x)),styles['head'] if ri==0 else styles['cell']) for x in row] for ri,row in enumerate(data)]
-            table=Table(cells,colWidths=widths,repeatRows=1,hAlign='LEFT');table.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,0),colors.HexColor('#175C80')),('ROWBACKGROUNDS',(0,1),(-1,-1),[colors.HexColor('#eff5f8'),colors.white]),('VALIGN',(0,0),(-1,-1),'TOP'),('LEFTPADDING',(0,0),(-1,-1),8),('RIGHTPADDING',(0,0),(-1,-1),8),('TOPPADDING',(0,0),(-1,-1),7),('BOTTOMPADDING',(0,0),(-1,-1),7)]));story.append(table)
+            table=Table(cells,colWidths=widths,repeatRows=1,hAlign='LEFT');table.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,0),colors.HexColor('#175C80')),('ROWBACKGROUNDS',(0,1),(-1,-1),[colors.HexColor('#eff5f8'),colors.white]),('VALIGN',(0,0),(-1,-1),'TOP'),('LEFTPADDING',(0,0),(-1,-1),8),('RIGHTPADDING',(0,0),(-1,-1),8),('TOPPADDING',(0,0),(-1,-1),7),('BOTTOMPADDING',(0,0),(-1,-1),7)]));story.append(KeepTogether([table_caption,table]))
             md.append('| '+' | '.join(data[0])+' |\n| '+' | '.join(['---']*len(data[0]))+' |\n'+'\n'.join('| '+' | '.join(map(str,r))+' |' for r in data[1:])+'\n')
             web.append('<div class="scroll"><table>'+''.join('<tr>'+''.join(f'<td>{html.escape(str(x))}</td>' for x in row)+'</tr>' for row in data)+'</table></div>')
         web.append('</section>')
     def footer(canvas,doc):
         canvas.setFont('DV',8);canvas.setFillColor(colors.HexColor('#536879'));canvas.drawString(55,28,'KINH DOANH SÁCH • NGHIÊN CỨU MÔ PHỎNG');canvas.drawRightString(A4[0]-55,28,str(doc.page))
-    SimpleDocTemplate(str(root/'report/bao_cao.pdf'),pagesize=A4,rightMargin=55,leftMargin=55,topMargin=44,bottomMargin=48,title='Kinh doanh sách - Nghiên cứu mô phỏng có kiểm chứng',author='Bản học thuật để nhóm rà soát').build(story,onFirstPage=footer,onLaterPages=footer)
+    AcademicDocument(str(root/'report/bao_cao.pdf'),pagesize=A4,rightMargin=55,leftMargin=55,topMargin=50,bottomMargin=48,title='Xây dựng bộ dữ liệu kinh doanh sách',author='').multiBuild(story,onFirstPage=footer,onLaterPages=footer)
     (root/'report/bao_cao.md').write_text('\n'.join(md),encoding='utf8')
     css='body{font:17px/1.7 Arial,sans-serif;background:#edf3f6;color:#203c4b;margin:0}main{max-width:1000px;margin:auto}section{background:white;margin:26px 0;padding:44px;border-radius:12px;border:1px solid #dce5ea}h1{font-size:28px;line-height:1.3;color:#175C80}img{width:100%;height:auto}table{border-collapse:collapse;width:100%;font-size:14px}td{padding:11px;border-bottom:1px solid #dce5ea}tr:first-child{background:#175C80;color:white}.scroll{overflow-x:auto}@media(max-width:650px){section{padding:20px}}@media print{section{break-before:page;border:0;margin:0;padding:0}body{background:white}}'
+    css+='body{font-family:Georgia,"Times New Roman",serif;color:#111;background:#eee}h1{color:#000;font-size:24px}section{border:0;border-radius:0}td{border:1px solid #d9d9d9}tr:first-child{background:#eee;color:#000}@media print{section{break-before:auto}h1{break-after:avoid}}'
     (root/'report/bao_cao.html').write_text('<!doctype html><html lang="vi"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Báo cáo nghiên cứu mô phỏng sách</title><style>'+css+'</style><main>'+''.join(web)+'</main></html>',encoding='utf8')

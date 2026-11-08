@@ -15,7 +15,7 @@ Ngày kiểm tra: 08/11/2026. Đây là kiểm tra cục bộ bằng công cụ 
 | Dashboard | Kiểm tra bằng Edge headless, tắt mạng; 18 tổ hợp năm/kênh đối soát đúng giá trị và số dòng với tổng hợp độc lập bằng Python. Không lỗi JavaScript. |
 | Màn hình nhỏ | 390×844; sau sửa không tràn ngang trang. Đã xem ảnh desktop và mobile. |
 | Báo cáo HTML | Tám ảnh tải thành công từ đường dẫn tương đối khi ngoại tuyến. |
-| PDF | 16 trang; render từng trang và xem bố cục; không có khối nội dung vượt biên kiểm tra. Dấu tiếng Việt, hình, bảng và số trang hiển thị. |
+| PDF bản ban đầu | 16 trang; render từng trang và xem bố cục; không có khối nội dung vượt biên kiểm tra. Dấu tiếng Việt, hình, bảng và số trang hiển thị. |
 | Kiểm tra toàn vẹn | Các tệp trong results/manifest.json khớp SHA-256 sau notebook cuối. |
 | Chạy lại độc lập | Chạy từ thư mục khác, xuất sang thư mục khác: raw/clean/truth trùng SHA-256; 6 lượt đầu (2 seed × 3 kịch bản) khớp kết quả trong bản 150 lượt. |
 | Repository gốc | Trước khi cập nhật, bản sao commit 6bfe691904b4d721ee1a1743509f6b581b70ce81 giữ sạch; commit này được giữ trong lịch sử để đối chiếu. |
@@ -29,3 +29,9 @@ Hai lỗi giao diện đã được phát hiện và sửa trong quá trình ki�
 - Chưa kiểm thử nguồn dữ liệu bên ngoài hoặc trường hợp có hàng triệu dòng.
 - Không có thông tin học phần/thành viên đầy đủ để làm bìa chính thức; nhóm cần bổ sung và hiểu nội dung trước khi nộp.
 - Không có xác nhận về yêu cầu số trang, mẫu bìa hoặc chính sách AI của lớp. Không tự coi kết quả kiểm tra này là phê duyệt nộp bài.
+
+## Cập nhật báo cáo học thuật ngày 08/11/2026
+
+Bản PDF mới có 19 trang, sáu chương, mục lục có số trang, tám hình, năm bảng, tài liệu tham khảo và phụ lục. Đã tái tạo từ bảng kết quả hiện có, render và xem bố cục toàn bộ trang, chỉnh vị trí chú thích bảng, kiểm tra hash trong manifest. Nguồn dữ liệu và KPI được giữ nguyên. Lượt cập nhật này kiểm tra báo cáo, không chạy lại toàn bộ thí nghiệm hoặc notebook. Bìa dùng tên học phần và đề tài, còn thiếu thông tin nhóm, lớp và giảng viên.
+
+Chạy `python tools/refresh_report.py` để tạo lại riêng báo cáo từ dữ liệu và kết quả đã lưu.

@@ -1,6 +1,4 @@
-# Xây dựng và phân tích bộ dữ liệu kinh doanh sách
-
-NGHIÊN CỨU MÔ PHỎNG CÓ KIỂM CHỨNG • NHẬP MÔN KHOA HỌC DỮ LIỆU
+# Tóm tắt nghiên cứu
 
 Bản nghiên cứu phục vụ học phần, ngày 08/11/2026. Thời gian được mô phỏng: 01/2024–12/2025. Tên sách, tác giả, nhà xuất bản, kênh bán và toàn bộ giao dịch đều giả lập. Không sử dụng dữ liệu giao dịch của doanh nghiệp hay khách hàng thật.
 
@@ -8,7 +6,7 @@ Tóm tắt. Đề tài xây dựng 6.500 đơn một đầu sách từ danh mụ
 
 Kết quả mô tả của kịch bản cơ sở: 2.969.430.000 đồng giá trị bán hàng, 30.790 cuốn và 300 mã sách có phát sinh bán. Ba kịch bản được lặp 50 lần để xem kết quả thay đổi khi bỏ hệ số khuyến mãi hoặc mùa vụ. Các khác biệt thu được chỉ đánh giá hành vi mô hình dưới giả định, không xác nhận quy luật thị trường Việt Nam.
 
-Đóng góp thực hành là một quy trình có thể chạy lại: dữ liệu thô và chuẩn tách biệt; quy tắc làm sạch có nhật ký; số liệu báo cáo lấy từ bảng kết quả; biểu đồ, dashboard và notebook dùng chung hàm phân tích. Nhóm cần bổ sung thông tin bìa học phần và kiểm tra hiểu biết trước khi nộp.
+Đóng góp thực hành là một quy trình có thể chạy lại: dữ liệu thô và chuẩn tách biệt; quy tắc làm sạch có nhật ký; số liệu báo cáo lấy từ bảng kết quả; biểu đồ, dashboard và notebook dùng chung hàm phân tích.
 
 Từ khóa: kinh doanh sách; dữ liệu mô phỏng; chất lượng dữ liệu; phân tích khám phá; tái lập; phân tích độ nhạy.
 
@@ -19,7 +17,17 @@ Từ khóa: kinh doanh sách; dữ liệu mô phỏng; chất lượng dữ li�
 | Giá trị bán hàng | 2.969.430.000 đồng |
 | Sai lệch so với toàn bộ dữ liệu chuẩn | -0,306% |
 
-# 1. Bài toán, câu hỏi và thiết kế nghiên cứu
+# Chương 1 Tổng quan đề tài
+
+Hoạt động bán sách tạo ra dữ liệu ở nhiều cấp độ, từ danh mục đầu sách đến từng dòng giao dịch. Để sử dụng dữ liệu phục vụ quản lý, cần thống nhất đơn vị quan sát, xác định các trường hợp sai và xây dựng chỉ tiêu có ý nghĩa nghiệp vụ. Một tổng bán hàng có thể tính đúng về số học nhưng vẫn thiếu giao dịch hoặc bị đếm lặp. Vì vậy, đề tài xem chất lượng dữ liệu và diễn giải kết quả là hai phần liên kết của cùng quá trình phân tích.
+
+Mục tiêu tổng quát là xây dựng bộ dữ liệu kinh doanh sách, xử lý dữ liệu, trực quan hóa và rút ra ý nghĩa từ kết quả. Các mục tiêu cụ thể gồm thiết kế danh mục và giao dịch có khóa định danh, mô phỏng lỗi thường gặp, xây dựng quy trình xử lý có thể truy vết, mô tả cơ cấu bán hàng và đánh giá mức phụ thuộc của kết luận vào giả định đầu vào.
+
+Phạm vi nghiên cứu gồm 300 đầu sách thuộc 10 thể loại, năm kênh giả lập và thời gian từ tháng 1 năm 2024 đến tháng 12 năm 2025. Bộ dữ liệu được xây dựng bằng mô phỏng để có thể biết giá trị chuẩn trước khi cài lỗi. Lựa chọn này cho phép đánh giá trực tiếp khả năng phục hồi dữ liệu, đồng thời giới hạn mọi kết luận kinh doanh trong phạm vi mô hình đã thiết kế.
+
+Báo cáo triển khai theo sáu chương. Chương 1 xác định bài toán và câu hỏi. Chương 2 trình bày cơ sở phương pháp. Chương 3 mô tả quá trình xây dựng và xử lý dữ liệu. Chương 4 phân tích kết quả trực quan. Chương 5 đánh giá độ nhạy. Chương 6 thảo luận ý nghĩa, hạn chế và hướng phát triển. Các phụ lục cung cấp cấu trúc dữ liệu và cách tái lập kết quả.
+
+# 1.1 Câu hỏi và thiết kế nghiên cứu
 
 Bối cảnh thực hành là một nhà sách giả định cần hiểu cơ cấu sản phẩm, kênh bán và thời điểm phát sinh giá trị bán hàng, đồng thời kiểm soát lỗi trong dữ liệu nhập từ nhiều nguồn. Bài không có mẫu xác suất từ thị trường nên không đặt mục tiêu ước lượng thị phần, lợi nhuận hay hành vi độc giả thực.
 
@@ -31,15 +39,27 @@ Thiết kế tham khảo cấu trúc ADEMP [1], áp dụng ở mức phù hợp 
 
 Đại lượng chính là tổng giá trị bán hàng T = tổng(giá bán × số cuốn). Giá bình quân theo cuốn = T / tổng số cuốn. Tỷ trọng nhóm = giá trị nhóm / T. Tăng trưởng mô phỏng năm 2025 = (T2025 / T2024 − 1) × 100%. Những đại lượng này đều mô tả tập dữ liệu, không ước lượng tổng thể thị trường.
 
-| Thành phần | Thiết kế đã thực hiện |
-| --- | --- |
-| Mục tiêu | EDA và đánh giá quy trình sửa lỗi |
-| Cơ chế sinh | Danh mục + dòng bán + lỗi có nhãn |
-| Đối tượng đánh giá | Dòng giữ lại và toàn bộ 6.500 dòng chuẩn |
-| Phương pháp | Chuẩn hóa, tra danh mục, cách ly xung đột |
-| Tiêu chí | Khớp trường, tỷ lệ giữ, sai lệch tổng, MCSE |
+# Chương 2 Cơ sở phương pháp
 
-# 2. Nguồn gốc dữ liệu và giả định
+Phân tích khám phá dữ liệu được sử dụng để mô tả phân phối, phát hiện quan sát bất thường và xác định quan hệ cần xem xét sâu hơn. Trong đề tài này, thống kê mô tả đi trước diễn giải kinh doanh. Mỗi kết quả phải xác định tập dữ liệu, đơn vị quan sát, công thức tổng hợp và mẫu số. Cách tổ chức này giúp phân biệt sự thay đổi của dữ liệu với sự thay đổi do bộ lọc hoặc cách tính.
+
+Chất lượng dữ liệu được đánh giá qua tính hợp lệ, đầy đủ, duy nhất và nhất quán. Tính hợp lệ kiểm tra miền giá trị như số lượng nguyên dương và điểm trong khoảng 1 đến 5. Tính đầy đủ gồm độ bao phủ của trường và giao dịch. Tính duy nhất được kiểm tra bằng mã dòng nghiệp vụ. Tính nhất quán được đánh giá qua quan hệ giữa giá gốc, giảm giá và giá bán. Việc đạt một tiêu chí không suy ra các tiêu chí còn lại cũng đạt.
+
+Khung ADEMP được dùng để trình bày rõ mục tiêu, cơ chế sinh dữ liệu, đại lượng cần đánh giá, phương pháp và thước đo kết quả [1]. Trong nghiên cứu này, dữ liệu chuẩn tạo điều kiện đối chiếu nhưng được tách khỏi đầu vào làm sạch. Việc tách này giúp kiểm tra quy trình phục hồi bằng thông tin nghiệp vụ sẵn có thay vì vô tình sử dụng đáp án của thí nghiệm.
+
+Với dòng i, đặt pᵢ là giá bán và qᵢ là số cuốn. Giá trị dòng bằng pᵢ × qᵢ. Tổng giá trị T là tổng giá trị của mọi dòng giữ lại, còn tổng lượng Q là tổng qᵢ. Giá bình quân có trọng số bằng T/Q. Trung bình đơn giản của giá theo dòng cho mỗi giao dịch trọng số bằng nhau, nên trả lời một câu hỏi khác khi số cuốn mỗi dòng khác nhau.
+
+Hệ số Pearson đo liên hệ tuyến tính giữa hai biến, nằm trong khoảng từ −1 đến 1 khi phương sai khác không. Hệ số gần 0 có thể đi cùng một quan hệ phi tuyến hoặc nhiều nhóm có cấu trúc khác nhau. Trong dữ liệu này, một sách xuất hiện nhiều lần nên phân tích điểm sách được tổng hợp ở cấp mã sách. Việc lựa chọn cấp tổng hợp là một phần của thiết kế phân tích.
+
+Boxplot mô tả trung vị, tứ phân vị và các điểm nằm ngoài râu hộp [3]. Quy tắc 1,5 lần khoảng tứ phân vị cung cấp dấu hiệu cần xem xét. Quyết định giữ hay cách ly còn phụ thuộc miền giá trị và bối cảnh nghiệp vụ. Các dòng mua nhiều được xem xét riêng vì có thể chi phối trung bình và hệ số tương quan.
+
+Biểu đồ cột phù hợp so sánh các nhóm danh mục, biểu đồ đường thể hiện thứ tự thời gian, biểu đồ phân tán thể hiện quan hệ hai biến và ma trận tương quan tóm tắt liên hệ tuyến tính. Khi dùng thang log cho lượng bán, khoảng cách bằng nhau biểu thị tỷ lệ thay đổi bằng nhau. Chú thích biểu đồ cần giúp người đọc nhận diện phép biến đổi này trước khi so sánh.
+
+# Chương 3 Xây dựng và xử lý dữ liệu
+
+Quy trình gồm thiết kế danh mục, sinh giao dịch chuẩn, tạo bản dữ liệu có lỗi, chuẩn hóa và đối chiếu kết quả. Ba lớp dữ liệu nguồn, dữ liệu xử lý và dữ liệu kiểm chứng có vai trò riêng. Các bước xử lý đều ghi nhật ký để giải thích số dòng thay đổi và giá trị được sửa.
+
+# 3.1 Nguồn gốc và cơ chế sinh dữ liệu
 
 Nguồn trực tiếp là src/data_generator.py. Không có dữ liệu được crawl hoặc mua từ các sàn. Các danh tính đều dùng nhãn giả lập để tránh ghép sai tác giả và nhà xuất bản vào tên sách có thật. Tài liệu tham khảo cung cấp cơ sở phương pháp; không được dùng để gán tính đại diện thị trường cho các tham số.
 
@@ -53,7 +73,9 @@ Số cuốn = 1 + Poisson(λ), trong đó λ = 1,5 × S × max(0,5; 1,8 − giá
 
 Tính truy xuất: catalog.csv là danh mục nghiệp vụ đầu vào; ground_truth.csv chỉ dành cho đánh giá. injected_errors.csv mô tả lỗi đã cài; hàm làm sạch không đọc hai tệp kiểm chứng này. SHA-256 của tệp đầu ra được lưu trong manifest.json. Việc ghi metadata và nguồn gốc tham khảo nguyên tắc tái sử dụng dữ liệu [2].
 
-# 3. Quy trình làm sạch và quyết định xử lý
+Thiết kế mô phỏng còn phân biệt hai nguồn biến động. Biến động giữa các dòng đến từ ngày bán, sách, kênh và số cuốn được lấy ngẫu nhiên. Khác biệt có hệ thống đến từ trọng số thể loại, mức giảm theo kênh và hệ số mùa vụ. Khi một nhóm đứng đầu, cần xem lại cả hai nguồn trước khi diễn giải. Seed cố định cho phép tái tạo cùng bộ dữ liệu, còn nhiều seed cho phép quan sát mức dao động do tính ngẫu nhiên.
+
+# 3.2 Quy trình làm sạch
 
 Bước 1: ghi nhận số dòng, thiếu và khóa lặp. Bước 2: chuẩn hóa khoảng trắng, thể loại, kiểu số và tiền tệ. Giá âm/thiếu được phục hồi từ giá gốc và giảm giá niêm yết, sử dụng cùng quy tắc làm tròn nghìn của hệ thống giả lập. Cách sửa này chỉ hợp lệ nếu hai trường cơ sở đáng tin.
 
@@ -65,6 +87,8 @@ Bước 4: cách ly số lượng không dương, không nguyên hoặc trên 1.
 
 Tạo đặc trưng dùng một hàm chung: giá <80.000; 80.000≤giá≤200.000; giá>200.000. Điểm: <3,0; [3,0;4,0); [4,0;4,5); ≥4,5; thiếu thành Chưa biết. Quy ước biên được kiểm tra riêng vì pandas.cut mặc định đóng khoảng bên phải [4]. Nhật ký cell_changes ghi thay đổi ô; row_lineage cho biết trạng thái của từng dòng thô.
 
+Thứ tự làm sạch ảnh hưởng đến khả năng nhận diện bản sao. Hai dòng có cùng ý nghĩa nhưng khác cách viết tiền tệ hoặc khoảng trắng chỉ được nhận diện nhất quán sau chuẩn hóa. Ngược lại, gộp mọi dòng có cùng mã trước khi so nội dung có thể làm mất dấu xung đột. Quy trình vì vậy chuẩn hóa biểu diễn trước, so sánh nội dung theo khóa sau và ghi lại trạng thái cuối cho toàn bộ bản ghi nguồn.
+
 | Bước | Dòng | Ô thiếu | Mã dòng lặp |
 | --- | --- | --- | --- |
 | Nạp dữ liệu | 6660 | 529 | 160 |
@@ -72,7 +96,7 @@ Tạo đặc trưng dùng một hàm chung: giá <80.000; 80.000≤giá≤200.00
 | Gộp bản sao cùng mã và cùng nội dung | 6505 | 0 | 5 |
 | Cách ly bất thường và xung đột | 6480 | 0 | 0 |
 
-# 4. Kiểm chứng chất lượng: đúng và đủ là hai tiêu chí
+# 3.3 Đánh giá chất lượng sau xử lý
 
 Trên 6.480 mã dòng giữ lại, tám trường được đối chiếu với dữ liệu chuẩn đều đạt tỷ lệ khớp 100%: giá bán, số lượng, giá trị bán hàng, điểm, năm xuất bản, tác giả, NXB và thể loại. Kết quả chỉ áp dụng cho các trường và lỗi đã thử; không có nghĩa mọi lỗi ngoài thực tế đều được xử lý đúng.
 
@@ -83,6 +107,8 @@ Tổng chuẩn là 2.978.555.000 đồng; tập sạch có 2.969.430.000 đồng
 Có 179 dòng bị gắn cờ IQR, gồm cả trường hợp lượng cao hợp lệ. Cần phân biệt kiểm tra hợp lệ theo miền dữ liệu với đánh giá hiếm gặp theo phân phối. Không dùng tỷ lệ ô thiếu bằng 0 làm thước đo duy nhất của chất lượng.
 
 Mỗi dòng thô phải có đúng một trạng thái cuối: giữ, gộp bản sao hoặc cách ly. Các kiểm tra tự động còn bao phủ giá trị biên, mâu thuẫn khóa, dữ liệu thiếu danh mục, dòng mua nhiều, các tổng theo nhóm và tái lập cùng seed. Các kết quả thí nghiệm không thay cho xác nhận độc lập của giảng viên.
+
+Số dòng giảm từ 6.660 xuống 6.480 cần được đọc theo hai mẫu số. Có 155 bản sao được gộp và 25 dòng nguồn được cách ly, tổng cộng 180 dòng rời tập nguồn. Tuy nhiên, 6.500 mã nghiệp vụ chuẩn chỉ giảm 20 mã, vì các bản sao không đại diện giao dịch bổ sung. Do đó tỷ lệ giữ dữ liệu nghiệp vụ được tính bằng 6.480/6.500, thay vì 6.480/6.660. Việc công bố cả hai số giúp tránh đánh đồng khử trùng với mất giao dịch.
 
 | Trường kiểm chứng | Khớp / đối chiếu |
 | --- | --- |
@@ -95,7 +121,11 @@ Mỗi dòng thô phải có đúng một trạng thái cuối: giữ, gộp bả
 | nha_xuat_ban | 6,480 / 6,480 |
 | the_loai | 6,480 / 6,480 |
 
-# 5. Thể loại và cơ cấu giá trị bán hàng
+# Chương 4 Kết quả phân tích và trực quan hóa
+
+Toàn bộ phân tích trong chương sử dụng 6.480 dòng sạch của kịch bản cơ sở. Tổng giá trị bán hàng là 2.969.430.000 đồng với 30.790 cuốn. Các biểu đồ được đọc theo thứ tự từ cơ cấu sản phẩm đến thời gian, quan hệ giữa các biến và kênh phân phối. Mỗi mục trình bày kết quả định lượng, giải thích trong phạm vi mô hình và ý nghĩa thực hành.
+
+# 4.1 Cơ cấu theo thể loại
 
 Trong kịch bản cơ sở, Kỹ năng sống dẫn đầu giá trị bán hàng với 638.410.000 đồng, chiếm 21,50%; lượng bán là 6.122 cuốn. Đây là tổng hợp trên tập sạch gồm 6.480 dòng. Hình 1 tách hai thước đo để không so chiều cao cột ở các đơn vị khác nhau.
 
@@ -103,9 +133,9 @@ Khác biệt giữa các thể loại đến từ trọng số chọn sách đã
 
 Ứng dụng thực hành là theo dõi sự tập trung của giá trị bán hàng và xác định nhóm cần phân tích sâu. Khi triển khai ở nhà sách thật, cần kiểm tra khả năng thiếu đơn theo kênh, khác biệt danh mục và chính sách phân loại trước khi so sánh.
 
-![5. Thể loại và cơ cấu giá trị bán hàng](../charts/01_genre.png)
+![4.1 Cơ cấu theo thể loại](../charts/01_genre.png)
 
-# 6. Danh mục sách và cách đọc xếp hạng
+# 4.2 Phân tích danh mục sách
 
 Mã BK0009 có giá trị bán hàng cao nhất trong kịch bản cơ sở: 47.701.000 đồng, 429 cuốn trên 49 dòng. Danh sách xếp hạng được nhóm theo mã sách và tên giả lập, không gộp bằng tên mơ hồ hoặc tách một mã vì ô tác giả bị thiếu.
 
@@ -113,9 +143,9 @@ Sách đứng đầu có thể chịu ảnh hưởng của vài dòng mua số l
 
 Bảng đầy đủ theo tác giả và NXB giả lập nằm trong results/author.csv và publisher.csv. Không chọn các tên ngẫu nhiên để đưa ra kiến nghị ký bản quyền hoặc khẳng định uy tín. Các bảng này có giá trị kiểm tra phép nhóm và đối soát tổng.
 
-![6. Danh mục sách và cách đọc xếp hạng](../charts/02_books.png)
+![4.2 Phân tích danh mục sách](../charts/02_books.png)
 
-# 7. Diễn biến thời gian trong kịch bản
+# 4.3 Phân tích theo thời gian
 
 Tháng cao nhất là 2024-11: 167.555.000 đồng; thấp nhất 2025-02: 93.928.000 đồng. Chênh lệch đỉnh so với đáy = 78,39%. Tăng trưởng năm 2025 so với 2024 trong dữ liệu là -1,31%; mô hình không cài xu hướng tăng trưởng riêng theo năm nên không diễn giải con số này thành tốc độ tăng trưởng thị trường.
 
@@ -123,9 +153,11 @@ Mùa vụ tháng 8–9 và 11–12 được chủ động cài vào λ. Biểu �
 
 Ứng dụng là cách xây dựng bảng theo thời gian và chuẩn bị giả thuyết để kiểm tra ở dữ liệu thật. Cần nhiều chu kỳ, lịch khuyến mãi thực, số ngày hoạt động và mức tồn kho trước khi lập dự báo nhập hàng. Bài không đưa ra dự báo Prophet/SARIMAX khi chưa có thiết kế đánh giá ngoài mẫu.
 
-![7. Diễn biến thời gian trong kịch bản](../charts/03_month.png)
+So sánh tháng dựa trên tổng giá trị cần xem thêm số ngày lịch và số giao dịch trong từng tháng. Tháng ngắn hơn có ít cơ hội phát sinh dòng bán hơn khi ngày được chọn đều. Vì vậy mức chênh lệch đỉnh và đáy là kết quả mô tả tổng hợp. Một phân tích vận hành mở rộng có thể báo cáo thêm giá trị bình quân theo ngày hoạt động và số cuốn trên đơn để tách quy mô giao dịch khỏi giá trị mỗi giao dịch.
 
-# 8. Giá, giảm giá và lượng bán
+![4.3 Phân tích theo thời gian](../charts/03_month.png)
+
+# 4.4 Giá và giảm giá
 
 Tương quan Pearson theo dòng giữa giảm giá thực tế và lượng là 0,173. Hình 4 dùng boxplot với thang log ở trục lượng để hiển thị cả giao dịch nhỏ và dòng mua nhiều; các nhóm được xác định bằng giảm giá niêm yết, còn hệ số tương quan dùng mức thực tế sau làm tròn.
 
@@ -133,9 +165,9 @@ Cơ chế sinh lượng chứa cả giá bán và mức giảm. Do đó quan h�
 
 Nếu muốn nghiên cứu tác động khuyến mãi trên dữ liệu thực, cần dữ liệu tiếp xúc/đơn hàng theo thời gian, cách chọn nhóm so sánh, yếu tố gây nhiễu và tốt nhất là thí nghiệm có thiết kế phù hợp. Muốn tối ưu lợi nhuận phải có chi phí; tổng doanh thu và tổng lượng không thay được biên lợi nhuận.
 
-![8. Giá, giảm giá và lượng bán](../charts/04_discount.png)
+![4.4 Giá và giảm giá](../charts/04_discount.png)
 
-# 9. Điểm sách và tổng lượng ở cấp mã sách
+# 4.5 Điểm sách và lượng bán
 
 Điểm là thuộc tính giả lập cố định của sách. Vì một sách có nhiều dòng, hình chính tổng hợp lên cấp ma_sach, n=300. Pearson giữa điểm và tổng cuốn ở cấp sách là 0,117; hệ số ở cấp dòng là 0,009. Hai giá trị trả lời hai câu hỏi khác nhau, không thể thay thế tùy ý.
 
@@ -143,9 +175,9 @@ Nếu muốn nghiên cứu tác động khuyến mãi trên dữ liệu thực, 
 
 Có 6.480 dòng có điểm trong kịch bản đầy đủ danh mục; 74,18% số dòng có điểm từ 4 trở lên. Đây là tỷ lệ dòng mang điểm sách giả lập, không phải tỷ lệ khách hàng hài lòng. Bài không tính p-value từ các dòng lặp của cùng sách.
 
-![9. Điểm sách và tổng lượng ở cấp mã sách](../charts/05_rating.png)
+![4.5 Điểm sách và lượng bán](../charts/05_rating.png)
 
-# 10. Tương quan và biến được tính từ công thức
+# 4.6 Cấu trúc tương quan
 
 Ma trận Hình 6 là mô tả Pearson ở cấp dòng, gồm cả dòng mua nhiều. Hệ số tuyến tính nhạy với những quan sát lớn, không bao quát mọi quan hệ phi tuyến. Kết quả ở cấp sách và phân tích bỏ dòng >150 cuốn được tách riêng, không thay đổi âm thầm tập quan sát.
 
@@ -153,9 +185,9 @@ Giá trị bán hàng được định nghĩa bằng giá bán × số lượng;
 
 Các bảng số gốc results/correlation.csv và describe.csv cho phép kiểm tra hệ số và phân phối. Khi áp dụng cho dữ liệu thực, cần xác định thời điểm đo từng biến và cách gom quan sát phụ thuộc; không diễn giải tương quan thành nguyên nhân.
 
-![10. Tương quan và biến được tính từ công thức](../charts/06_correlation.png)
+![4.6 Cấu trúc tương quan](../charts/06_correlation.png)
 
-# 11. Kênh và phân khúc giá
+# 4.7 Kênh bán và phân khúc giá
 
 Giá bình quân có trọng số theo cuốn là 96.441 đồng; được tính từ tổng giá trị / tổng cuốn. Hình 7 dùng cùng mẫu số là toàn bộ 2.969.430.000 đồng trong tập sạch, bao gồm mọi kênh và phân khúc.
 
@@ -163,9 +195,13 @@ Tỷ trọng kênh thể hiện xác suất chọn kênh, giảm giá và số l
 
 Dashboard có bộ lọc năm/kênh và tính lại KPI từ tập được chọn. Mỗi lần lọc thay đổi mẫu số; người dùng cần ghi rõ bộ lọc khi trích số. Dashboard chạy ngoại tuyến và không sử dụng chỉ số viết cố định như tăng trưởng hoặc mức hài lòng.
 
-![11. Kênh và phân khúc giá](../charts/07_composition.png)
+![4.7 Kênh bán và phân khúc giá](../charts/07_composition.png)
 
-# 12. Phân tích độ nhạy và độ bất định mô phỏng
+# Chương 5 Đánh giá độ nhạy của kết quả
+
+Một kết quả xuất hiện trong một lần mô phỏng có thể phụ thuộc hạt giống ngẫu nhiên hoặc tham số thiết kế. Chương này thay đổi từng giả định và so sánh nhiều lần chạy. Các thí nghiệm bổ sung giúp nhận diện nguồn hình thành kết quả, đồng thời đánh giá lựa chọn xử lý thiếu dữ liệu.
+
+# 5.1 Thí nghiệm thay đổi giả định
 
 Ba kịch bản dùng seed 100 đến 149: cơ sở; đặt β=0; đặt S=1 cho mọi tháng. Mỗi kịch bản có 50 lần sinh độc lập theo seed. Đây là so sánh có ghép seed, không phải can thiệp ngẫu nhiên trên người mua thật. Quy mô được chọn để minh họa độ dao động và thời gian chạy phù hợp học phần; chưa tuyên bố hội tụ cho mọi chỉ tiêu.
 
@@ -175,7 +211,9 @@ Tệp sensitivity_summary.csv lưu trung bình, độ lệch chuẩn giữa các
 
 Kết quả: r trung bình sau bỏ dòng >150 cuốn đổi từ 0,468 ở cơ sở xuống 0,087 khi β=0. Tỷ trọng Q4 giảm từ 29,95% xuống 25,33% khi bỏ mùa vụ. Hình 8 chỉ loại dòng mua nhiều cho chỉ tiêu tương quan; báo cáo chính vẫn giữ các dòng hợp lệ. Kết quả cho thấy những nhận xét về giảm giá/mùa vụ phụ thuộc cơ chế sinh.
 
-![12. Phân tích độ nhạy và độ bất định mô phỏng](../charts/08_sensitivity.png)
+Sai lệch tổng giá trị trung bình ở cả ba kịch bản nằm quanh −0,32%. Kết quả này cho thấy cơ chế cách ly gây thiếu tổng trong các lần thử đang xét, kể cả khi giả định về mùa vụ hoặc giảm giá thay đổi. Đây là một lý do cần theo dõi chỉ tiêu đầy đủ song song với chỉ tiêu sửa đúng. Khi tăng số lần chạy, MCSE của trung bình thường giảm theo căn bậc hai của số lần chạy trong điều kiện các lần chạy độc lập và phương sai hữu hạn.
+
+![5.1 Thí nghiệm thay đổi giả định](../charts/08_sensitivity.png)
 
 | Kịch bản | Q4 (%) | r (bỏ >150) | Sai lệch T (%) |
 | --- | --- | --- | --- |
@@ -183,7 +221,7 @@ Kết quả: r trung bình sau bỏ dòng >150 cuốn đổi từ 0,468 ở cơ 
 | Không hệ số giảm giá | 29,32 | 0,087 | -0,319 |
 | Không mùa vụ | 25,33 | 0,474 | -0,317 |
 
-# 13. Điền khuyết: lợi ích và giới hạn
+# 5.2 Thí nghiệm dữ liệu thiếu
 
 Kịch bản chính khôi phục thuộc tính sách từ danh mục được giả định đáng tin. Đây là đối chiếu nghiệp vụ, không phải suy luận điểm đánh giá từ các giao dịch tương tự. Một kiểm tra riêng loại bỏ thông tin tra cứu và che ngẫu nhiên 2%, 10%, 25% điểm trên dữ liệu chuẩn, dùng cùng seed 42.
 
@@ -202,19 +240,19 @@ Thử nghiệm tự động cũng cung cấp danh mục rỗng để đảm bả
 | 25% | Giữ thiếu | 75,0% | Không áp dụng |
 | 25% | Trung bình thể loại | 100,0% | 0,390 |
 
-# 14. Ý nghĩa thực hành, hạn chế và kết luận
+# Chương 6 Thảo luận và kết luận
 
 Ứng dụng có thể chuyển sang nhà sách thật là quy trình quản trị dữ liệu: dùng mã dòng ổn định; giữ danh mục sách đã xác minh; tách dữ liệu nguồn và dữ liệu xử lý; cách ly thay vì xóa mất dấu; đối soát tổng; công khai bộ lọc và mẫu số. Các bảng EDA có thể hỗ trợ hình thành câu hỏi về danh mục, kênh và thời điểm, sau đó kiểm tra bằng dữ liệu kinh doanh thực.
 
-Không có căn cứ trong bài để cắt tồn kho 40%, dồn ngân sách 70%, cam kết lợi nhuận 15% hay dự báo tăng trưởng 40%. Nếu cần các quyết định này, nhóm phải thu thập tồn kho, giá vốn, phí, quảng cáo, hủy/hoàn và dữ liệu khách hàng được phép sử dụng; đồng thời xác định thiết kế đánh giá phù hợp.
+Ý nghĩa quản trị trực tiếp của kết quả là xây dựng cơ chế đối soát trước khi sử dụng báo cáo bán hàng. Sai lệch 9.125.000 đồng giữa tập chuẩn và tập sạch cho biết phần giá trị nằm trong các giao dịch chưa đủ điều kiện phân tích. Khi vận hành thực tế, người phụ trách dữ liệu cần rà soát hồ sơ gốc của các mã bị cách ly, cập nhật trạng thái xử lý và tính lại tổng sau khi xác minh. Nhờ đó, báo cáo thể hiện cả kết quả phân tích và phạm vi dữ liệu đang chờ xử lý.
+
+Các kết quả theo thể loại, sách, kênh và thời gian cung cấp cấu trúc cho một báo cáo quản trị định kỳ. Người quản lý có thể dùng cấu trúc này để chọn nhóm cần kiểm tra thêm, chẳng hạn một đầu sách có tổng lượng cao do ít đơn mua nhiều. Quyết định nhập hàng cần bổ sung tồn kho và thời gian cung ứng. Quyết định khuyến mãi cần bổ sung giá vốn và chi phí kênh. Việc nêu dữ liệu cần bổ sung giúp chuyển nhận xét mô tả thành một quy trình ra quyết định có điều kiện kiểm chứng.
 
 Hạn chế chính: mọi tham số chưa hiệu chỉnh; danh mục hoàn toàn giả lập; chỉ một loại đơn một đầu sách; chỉ 300 sách và 2 năm; lỗi cài trước có dạng đơn giản; danh mục chuẩn đáng tin là giả định mạnh; thiếu ngẫu nhiên không đại diện mọi cơ chế; 50 lần mô phỏng cho mỗi kịch bản chưa đủ để khảo sát mọi trường hợp; không đo ngoại lực và chi phí.
 
 Kết luận: bài hoàn thành chu trình xây dựng, xử lý, EDA và trực quan hóa trên dữ liệu mô phỏng, có đối soát bằng dữ liệu chuẩn và đánh giá ảnh hưởng của loại bản ghi. Kết quả cho thấy có thể phục hồi chính xác các trường đã kiểm tra trên tập giữ lại nhưng tổng kỳ vẫn thiếu do cách ly. Ý nghĩa khoa học nằm ở tính kiểm chứng và việc nhận biết giới hạn, không ở khẳng định một quy luật thị trường mới.
 
 Hướng tiếp theo hợp lý là lấy một bộ giao dịch ẩn danh có quyền sử dụng từ nhà sách, xác minh danh mục và so sánh phân phối với mô hình. Chỉ sau đó mới hiệu chỉnh tham số hoặc đề xuất dự báo; nếu không có dữ liệu thật, mở rộng các cơ chế lỗi và số lần mô phỏng, công khai chúng là thí nghiệm giả lập.
-
-Trách nhiệm nhóm: điền thông tin học phần, thành viên và đóng góp có thật; đọc và chạy lại notebook; có thể giải thích các giả định và giới hạn; khai báo hỗ trợ AI theo yêu cầu của lớp. Bản này không xác nhận một khảo sát doanh nghiệp hoặc thu thập thị trường chưa từng diễn ra.
 
 # Tài liệu tham khảo và chỉ dẫn tái lập
 
@@ -231,3 +269,13 @@ Nguồn sơ cấp của mọi con số mới: data/processed/book_sales_clean.cs
 Tái lập: Python 3.12; cài requirements.txt (hoặc requirements-lock.txt để dùng toàn bộ phiên bản đã kiểm thử); chạy python run.py --replications 50; chạy python -m pytest -q; chạy python tools/execute_notebook.py. Notebook đọc dữ liệu nguồn và gọi chung hàm xử lý, sau đó đối soát với CSV được pipeline xuất.
 
 README.md là điểm bắt đầu; docs/QUY-TRINH.md mô tả phương pháp; data/data_dictionary.md định nghĩa trường; docs/DOI-SOAT-BAN-CU.md lưu các số tính lại từ bản gốc; docs/PHAN-VIEC-NHOM.md ghi phần công việc cần nhóm cung cấp. Các nguồn phương pháp trên không chứng minh tính đại diện của dữ liệu.
+
+# Phụ lục A Cấu trúc dữ liệu và khả năng truy vết
+
+Mã raw_row_id phân biệt từng bản ghi nguồn. Mã ma_dong phân biệt giao dịch nghiệp vụ và được giữ nguyên khi tạo bản sao. Mã ma_sach liên kết nhiều dòng bán với một sách trong danh mục. Ba mã này phục vụ ba mục đích khác nhau, nên khử trùng phải dựa vào mã nghiệp vụ và nội dung sau chuẩn hóa.
+
+Các trường mô tả sách gồm tên sách, thể loại, tác giả, nhà xuất bản và năm xuất bản. Các trường giao dịch gồm ngày bán, kênh, giá gốc, giảm giá niêm yết, giá bán và số lượng. Điểm đánh giá là thuộc tính cố định của sách. Giá trị bán hàng và giảm giá thực tế là các biến được tính từ trường nguồn.
+
+Tệp cell_changes ghi giá trị trước và sau ở cấp ô. Tệp row_lineage ghi trạng thái cuối cho mỗi dòng nguồn. Tệp quarantine giữ bản ghi cần xác minh cùng lý do. Khi đọc một tổng bị giảm sau làm sạch, có thể đi ngược từ bảng tổng hợp đến các trạng thái và mã dòng để xác định nguyên nhân.
+
+Từ điển đầy đủ tại data/data_dictionary.md quy định kiểu logic, đơn vị, miền giá trị và công thức. Tiền được biểu diễn bằng đồng, số lượng bằng cuốn và ngày theo định dạng YYYY-MM-DD. Các CSV sử dụng UTF-8 BOM để hỗ trợ đọc tiếng Việt.
