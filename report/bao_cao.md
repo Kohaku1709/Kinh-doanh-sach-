@@ -1,250 +1,233 @@
-# BÁO CÁO DỰ ÁN: XÂY DỰNG BỘ DỮ LIỆU KINH DOANH SÁCH, XỬ LÝ, TRỰC QUAN HÓA VÀ RÚT RA CÁC Ý NGHĨA KINH DOANH
+# Xây dựng và phân tích bộ dữ liệu kinh doanh sách
 
-**Vị trí đảm nhiệm:** Data Analyst & Data Engineer  
-**Bộ phận:** Phân tích Dữ liệu & Tăng trưởng Kinh doanh (Analytics & Growth)  
-**Thời gian dữ liệu:** 24 tháng liên tục (01/2024 - 12/2025)  
-**Công nghệ:** Python, Pandas, NumPy, Matplotlib, Seaborn, Plotly, OpenPyXL  
+NGHIÊN CỨU MÔ PHỎNG CÓ KIỂM CHỨNG • NHẬP MÔN KHOA HỌC DỮ LIỆU
 
----
+Bản nghiên cứu phục vụ học phần, ngày 08/11/2026. Thời gian được mô phỏng: 01/2024–12/2025. Tên sách, tác giả, nhà xuất bản, kênh bán và toàn bộ giao dịch đều giả lập. Không sử dụng dữ liệu giao dịch của doanh nghiệp hay khách hàng thật.
 
-## 1. GIỚI THIỆU & MỤC TIÊU DỰ ÁN
+Tóm tắt. Đề tài xây dựng 6.500 đơn một đầu sách từ danh mục 300 sách giả lập, chủ động thêm lỗi để tạo 6.660 dòng thô. Quy trình chuẩn hóa, đối chiếu danh mục và xử lý mã dòng thu được 6.480 dòng phân tích. Các trường được đối chiếu trên tập giữ lại khớp dữ liệu chuẩn; tuy nhiên giá trị bán hàng toàn kỳ vẫn chênh -0,306% do cách ly bản ghi. Điều này cho thấy tính đúng của từng dòng giữ lại khác với độ đầy đủ của toàn bộ dữ liệu.
 
-### 1.1. Bối cảnh ngành
-Thị trường phát hành và kinh doanh sách bán lẻ tại Việt Nam đang trải qua sự chuyển dịch mạnh mẽ từ các chuỗi cửa hàng vật lý truyền thống sang các kênh thương mại điện tử (Shopee, Tiki) và thương mại xã hội qua video ngắn/livestream (TikTok Shop). Để tồn tại và mở rộng quy mô, các doanh nghiệp xuất bản và nhà sách không thể chỉ dựa vào cảm tính biên tập, mà bắt buộc phải tối ưu hóa danh mục dựa trên dữ liệu (Data-Driven Decision Making): từ dự báo sức mua mùa vụ, định giá bán, quản trị khuyến mãi đến lựa chọn kênh phân phối trọng điểm.
+Kết quả mô tả của kịch bản cơ sở: 2.969.430.000 đồng giá trị bán hàng, 30.790 cuốn và 300 mã sách có phát sinh bán. Ba kịch bản được lặp 50 lần để xem kết quả thay đổi khi bỏ hệ số khuyến mãi hoặc mùa vụ. Các khác biệt thu được chỉ đánh giá hành vi mô hình dưới giả định, không xác nhận quy luật thị trường Việt Nam.
 
-### 1.2. Mục tiêu dự án
-Dự án được triển khai nhằm thực hiện trọn vẹn chu trình kỹ thuật & phân tích dữ liệu 4 giai đoạn:
-1. **Giai đoạn 1 – Xây dựng bộ dữ liệu:** Thiết lập bộ dữ liệu giao dịch kinh doanh sách đa kênh quy mô lớn, bao quát 10 thể loại trọng điểm trong 24 tháng.
-2. **Giai đoạn 2 – Tiền xử lý & Chuẩn hóa:** Làm sạch dữ liệu, xử lý trùng lặp, khắc phục lỗi chuỗi ký tự, nội suy giá trị khuyết thiếu hợp lý, loại bỏ ngoại lai phi lý và tạo các đặc trưng kinh doanh mới.
-3. **Giai đoạn 3 – Trực quan hóa đa chiều:** Thiết kế hệ thống biểu đồ đạt tiêu chuẩn báo cáo quản trị, làm rõ 7 bài toán kinh doanh then chốt và xây dựng 1 Interactive Dashboard HTML.
-4. **Giai đoạn 4 – Rút ra ý nghĩa & Đề xuất chiến lược:** Tổng hợp các insight định lượng cốt lõi và kiến nghị 5 giải pháp hành động cụ thể về danh mục, định giá, khuyến mãi và kênh bán.
+Đóng góp thực hành là một quy trình có thể chạy lại: dữ liệu thô và chuẩn tách biệt; quy tắc làm sạch có nhật ký; số liệu báo cáo lấy từ bảng kết quả; biểu đồ, dashboard và notebook dùng chung hàm phân tích. Nhóm cần bổ sung thông tin bìa học phần và kiểm tra hiểu biết trước khi nộp.
 
----
+Từ khóa: kinh doanh sách; dữ liệu mô phỏng; chất lượng dữ liệu; phân tích khám phá; tái lập; phân tích độ nhạy.
 
-## 2. NGUỒN DỮ LIỆU & PHƯƠNG PHÁP XÂY DỰNG
+| Chỉ tiêu cơ sở | Giá trị |
+| --- | --- |
+| Dòng thô / dòng giữ lại | 6,660 / 6,480 |
+| Mã sách trong tập sạch | 300 |
+| Giá trị bán hàng | 2.969.430.000 đồng |
+| Sai lệch so với toàn bộ dữ liệu chuẩn | -0,306% |
 
-### 2.1. Nguồn dữ liệu & Lý do lựa chọn
-Theo thứ tự ưu tiên phương án:
-* **Khảo sát thu thập web thực tế (Phương án a):** Qua kiểm tra thực tế, các nền tảng bán sách trực tuyến lớn tại Việt Nam (Tiki, Fahasa, Shopee) thiết lập hệ thống tường lửa Cloudflare/WAF chặt chẽ và không mở public API chi tiết. Quan trọng hơn, các website bán lẻ **chỉ hiển thị lượng bán lũy kế toàn thời gian** (ví dụ: "Đã bán 5.2k"), hoàn toàn **không công khai nhật ký giao dịch theo từng đơn hàng, từng ngày/tháng, và phân bổ theo kênh phân phối**.
-* **Lựa chọn phương án triển khai (Phương án c):** Tự mô phỏng dữ liệu giao dịch bán lẻ dựa trên danh mục đầu sách thật của các Nhà xuất bản uy tín tại Việt Nam (NXB Trẻ, NXB Kim Đồng, NXB Hội Nhà Văn, NXB Phụ Nữ...).
-* **Đảm bảo tính trung thực & Khả năng tái lập:** Quá trình sinh dữ liệu được cấu hình hạt giống ngẫu nhiên cố định (`Random Seed = 42`) trong file `src/data_generator.py`. Mọi logic thị trường được lập trình phản ánh sát thực tế:
-  - Phân bổ thể loại có trọng số theo thị hiếu tiêu dùng Việt Nam.
-  - Tác động kích cầu của mức giảm giá theo quy luật cung - cầu.
-  - Chu kỳ biến động mùa vụ (Mùa Tết Âm lịch, Mùa Tựu trường Tháng 8-9, Lễ hội Mega Sale 11/11 & 12/12).
-  - Phân bổ điểm đánh giá thực tế (phân phối Beta lệch trái quanh mức 4.0 - 4.8 sao).
-  - Cố ý đưa vào các lỗi thực tế (3-5% dữ liệu) như lỗi định dạng tiền tệ `"120,000 VNĐ"`, giá trị âm, ngoại lai số lượng bán ảo (99999 cuốn), ô trống khuyết thiếu và khoảng trắng không đồng nhất để phục vụ quy trình làm sạch.
+# 1. Bài toán, câu hỏi và thiết kế nghiên cứu
 
-### 2.2. Quy mô dữ liệu ban đầu
-* **Tổng số bản ghi ban đầu:** 6,660 dòng giao dịch (trong đó có 6,500 giao dịch gốc và 160 bản ghi trùng lặp cố ý).
-* **Số trường thông tin:** 14 cột dữ liệu gốc.
-* **Thời gian ghi nhận:** 24 tháng liên tục (từ ngày 01/01/2024 đến hết ngày 31/12/2025).
-* **Độ bao phủ:** 10 thể loại sách, 8 nhà xuất bản lớn, 1,200 tựa sách độc lập, 5 kênh phân phối.
+Bối cảnh thực hành là một nhà sách giả định cần hiểu cơ cấu sản phẩm, kênh bán và thời điểm phát sinh giá trị bán hàng, đồng thời kiểm soát lỗi trong dữ liệu nhập từ nhiều nguồn. Bài không có mẫu xác suất từ thị trường nên không đặt mục tiêu ước lượng thị phần, lợi nhuận hay hành vi độc giả thực.
 
----
+Bảy câu hỏi mô tả: (1) thể loại nào đóng góp nhiều giá trị và số cuốn; (2) mã sách nào có giá trị bán hàng cao; (3) giá trị thay đổi theo tháng ra sao; (4) mức giá, giảm giá và lượng có quan hệ gì; (5) điểm giả lập có liên hệ với lượng ở cấp sách không; (6) cấu trúc tương quan giữa các biến ra sao; (7) cơ cấu theo kênh và phân khúc giá như thế nào. Câu hỏi kiểm chứng bổ sung: làm sạch sửa đúng đến đâu, mất bao nhiêu dữ liệu, và kết quả phụ thuộc giả định ra sao?
 
-## 3. QUY TRÌNH XỬ LÝ DỮ LIỆU (DATA CLEANING & PREPROCESSING)
+Thiết kế tham khảo cấu trúc ADEMP [1], áp dụng ở mức phù hợp học phần: mục tiêu, cơ chế sinh, đại lượng cần tính, phương pháp và tiêu chí đánh giá. Đây là vận dụng khung báo cáo thí nghiệm mô phỏng, không phải nghiên cứu đề xuất phương pháp thống kê mới.
 
-Quy trình xử lý dữ liệu được thực thi thông qua module `src/data_cleaner.py` với các bước kiểm soát chặt chẽ:
+Đơn vị dữ liệu là dòng đơn hàng một đầu sách. Mỗi mã đơn chỉ có một mã dòng trong mô hình này; số cuốn có thể lớn hơn 1. Không mô phỏng khách hàng, đơn nhiều đầu sách, chi phí, tồn kho, hoàn/hủy hoặc phễu chuyển đổi. Vì vậy không tính CAC, tỷ lệ mua lại, tỷ lệ bỏ giỏ hoặc lợi nhuận.
 
-```
-[Dữ liệu thô ban đầu: 6,660 dòng]
-       │
-       ▼ (Loại bỏ trùng lặp 100%)
-[6,543 dòng]
-       │
-       ▼ (Chuẩn hóa định dạng giá & sửa giá âm/0)
-[6,543 dòng - Sạch định dạng số]
-       │
-       ▼ (Chuẩn hóa Title Case & khoảng trắng Thể loại/NXB/Tác giả)
-[6,543 dòng - Đồng nhất chuỗi ký tự]
-       │
-       ▼ (Điền khuyết: Median năm XB, Mean đánh giá theo thể loại, nhãn NXB/Tác giả)
-[6,543 dòng - 0 ô thiếu]
-       │
-       ▼ (Lọc ngoại lai phi lý số lượng bán < 1 hoặc > 150 & khử trùng lặp)
-[6,501 dòng - Không ngoại lai, 0 trùng lặp]
-       │
-       ▼ (Feature Engineering: Doanh thu, Phân khúc giá, Nhóm thời gian, Nhóm đánh giá)
-[Dữ liệu sạch hoàn chỉnh: 6,501 dòng, 22 cột]
-```
+Đại lượng chính là tổng giá trị bán hàng T = tổng(giá bán × số cuốn). Giá bình quân theo cuốn = T / tổng số cuốn. Tỷ trọng nhóm = giá trị nhóm / T. Tăng trưởng mô phỏng năm 2025 = (T2025 / T2024 − 1) × 100%. Những đại lượng này đều mô tả tập dữ liệu, không ước lượng tổng thể thị trường.
 
-### 3.1. Chi tiết từng bước xử lý & Lý do lựa chọn
-1. **Loại bỏ trùng lặp (Duplicate Removal):**
-   - *Thực hiện:* Loại bỏ 117 dòng trùng khớp 100% tất cả các trường dữ liệu.
-   - *Lý do:* Đây là hệ quả của việc lỗi mạng hoặc cơ chế retry đơn hàng ghi nhận 2 lần cùng một mã và thời điểm.
-2. **Chuẩn hóa giá bán & tỷ lệ giảm giá:**
-   - *Thực hiện:* Sử dụng Regular Expression để bóc tách chuỗi `"VNĐ"`, ký tự phân cách hàng nghìn. Phát hiện 15 bản ghi có giá bán âm hoặc bằng 0.
-   - *Xử lý:* Khôi phục giá bán hợp lệ bằng công thức: $\text{gia\_ban} = \text{gia\_goc} \times (1 - \text{phan\_tram\_giam\_gia} / 100)$. Đồng bộ lại tỷ lệ giảm giá chuẩn xác.
-3. **Chuẩn hóa chuỗi văn bản (String Normalization):**
-   - *Thực hiện:* Xóa khoảng trắng thừa ở đầu, cuối và giữa các từ. Đồng nhất bảng mã danh mục 10 thể loại và 8 nhà xuất bản về chuẩn Title Case (ví dụ: chuyển `"  văn học "` và `"VĂN HỌC"` về `"Văn học"`, chuyển `"nxb kim đồng "` về `"NXB Kim Đồng"`).
-4. **Xử lý giá trị khuyết thiếu (Missing Values Imputation):**
-   - *`tac_gia` (45 ô khuyết):* Điền nhãn `"Không rõ tác giả"`. Lý do: Không tự suy đoán tên tác giả để tránh sai lệch học thuật, đồng thời không xóa dòng để bảo toàn số liệu doanh thu.
-   - *`nha_xuat_ban` (130 ô khuyết):* Điền nhãn `"NXB Khác"` nhằm giữ lại dữ liệu tài chính của đơn hàng.
-   - *`nam_xuat_ban` (85 ô khuyết):* Điền bằng giá trị trung vị (Median) theo từng thể loại tương ứng. Trung vị phản ánh độ tuổi ấn phẩm điển hình của thể loại mà không bị ảnh hưởng bởi năm xuất bản quá xa xưa.
-   - *`diem_danh_gia` (110 ô khuyết):* Điền bằng điểm trung bình (Mean) của thể loại sách tương ứng (làm tròn 1 chữ số thập phân), phản ánh mức hài lòng bình quân của độc giả trong cùng nhóm chủ đề.
-5. **Phát hiện & Xử lý ngoại lai (Outliers Treatment):**
-   - *Phát hiện:* Dùng phương pháp IQR trên `so_luong_da_ban` ($Q_1 = 6.0$, $Q_3 = 12.0$, $IQR = 6.0$). Phát hiện 7 bản ghi có số lượng bán âm ($< 1$) và 8 bản ghi có số lượng bán ảo ($> 150$ cuốn như 5555, 9999, 99999).
-   - *Xử lý:* Loại bỏ hoàn toàn 15 bản ghi này. Lý do: Đây là lỗi nhập liệu của nhân viên hoặc do bot kiểm thử hệ thống tạo ra, không phản ánh hành vi mua sắm bán lẻ của người tiêu dùng.
-   - *Khử trùng lặp cuối:* Sau khi chuẩn hóa chuỗi và điền khuyết, khử thêm 27 dòng trùng lặp phát sinh.
-6. **Làm giàu đặc trưng mới (Feature Engineering):**
-   - `doanh_thu = gia_ban * so_luong_da_ban`: Chỉ số giá trị thương mại cốt lõi.
-   - `phan_khuc_gia`: Nhóm giá phục vụ phân tích ma trận sản phẩm (`Giá rẻ (< 80k)`, `Trung bình (80k - 200k)`, `Cao cấp (> 200k)`).
-   - Trích xuất thời gian: `thang_ban`, `quy_ban`, `nam_ban`, `thang_nam`, `thu_trong_tuan`.
-   - `nhom_danh_gia`: Phân bậc chất lượng tiếp nhận từ người đọc (`Xuất sắc (>= 4.5)`, `Tốt (4.0 - < 4.5)`, `Trung bình (3.0 - < 4.0)`, `Thấp (< 3.0)`).
+| Thành phần | Thiết kế đã thực hiện |
+| --- | --- |
+| Mục tiêu | EDA và đánh giá quy trình sửa lỗi |
+| Cơ chế sinh | Danh mục + dòng bán + lỗi có nhãn |
+| Đối tượng đánh giá | Dòng giữ lại và toàn bộ 6.500 dòng chuẩn |
+| Phương pháp | Chuẩn hóa, tra danh mục, cách ly xung đột |
+| Tiêu chí | Khớp trường, tỷ lệ giữ, sai lệch tổng, MCSE |
 
-### 3.2. Bảng đối soát số liệu Trước và Sau mỗi bước xử lý
+# 2. Nguồn gốc dữ liệu và giả định
 
-| Bước xử lý | Số dòng | Số cột | Số dòng trùng | Số ô thiếu | Nhận xét chi tiết kỹ thuật |
-| :--- | :---: | :---: | :---: | :---: | :--- |
-| **1. Dữ liệu thô ban đầu** | 6,660 | 14 | 117 | 370 | Tồn tại lỗi nhập liệu, giá trị âm, chuỗi text lệch |
-| **2. Loại bỏ trùng lặp** | 6,543 | 14 | 0 | 370 | Giảm 117 dòng trùng hoàn toàn |
-| **3. Chuẩn hóa giá bán** | 6,543 | 14 | 6 | 370 | Ép kiểu số nguyên VNĐ, phục hồi 15 giá bán âm/0 |
-| **4. Chuẩn hóa chuỗi văn bản** | 6,543 | 14 | 25 | 195 | Xóa khoảng trắng thừa, chuẩn hóa Title Case |
-| **5. Điền giá trị thiếu** | 6,543 | 14 | 27 | 0 | **Sạch hoàn toàn missing values (0 ô thiếu)** |
-| **6. Xử lý ngoại lai & Khử trùng** | 6,501 | 14 | 0 | 0 | Loại 15 ngoại lai phi lý và 27 trùng lặp phát sinh |
-| **7. Làm giàu đặc trưng** | **6,501** | **22** | **0** | **0** | **Tạo 8 đặc trưng mới, dữ liệu đạt chuẩn phân tích** |
+Nguồn trực tiếp là src/data_generator.py. Không có dữ liệu được crawl hoặc mua từ các sàn. Các danh tính đều dùng nhãn giả lập để tránh ghép sai tác giả và nhà xuất bản vào tên sách có thật. Tài liệu tham khảo cung cấp cơ sở phương pháp; không được dùng để gán tính đại diện thị trường cho các tham số.
 
----
+Danh mục gồm 300 mã sách, 30 mã cho mỗi thể loại. Năm xuất bản giả lập nằm trong 2015–2023 để luôn trước kỳ bán. Giá gốc được sinh từ phân phối log-normal với trung vị 120.000, độ lệch chuẩn log 0,48, làm tròn nghìn và chặn trong 45.000–350.000 đồng. Điểm sách = 1 + 4 × Beta(8,2), làm tròn 0,1; đây là thuộc tính giả lập cố định trước kỳ bán, không phải đánh giá tổng hợp cuối kỳ.
 
-## 4. TRỰC QUAN HÓA & PHÂN TÍCH CHI TIẾT THEO CÂU HỎI
+Thể loại được chọn theo trọng số [0,20; 0,18; 0,15; 0,13; 0,09; 0,06; 0,07; 0,04; 0,05; 0,03] theo thứ tự trong config.py. Kênh Sàn A/B/C, Cửa hàng, Website có trọng số [0,35; 0,22; 0,18; 0,15; 0,10]. Các giá trị là giả định thiết kế, chưa hiệu chỉnh theo dữ liệu thực.
 
-Toàn bộ 8 biểu đồ định dạng PNG độ phân giải 300 DPI được lưu tại thư mục `/charts/`. Dưới đây là phân tích định lượng chi tiết cho từng bài toán:
+Ngày bán được chọn đều trên 731 ngày của 2024–2025. Giảm giá niêm yết chọn đều từ {0,5,…,40}% cho ba sàn và {0,5,…,20}% cho hai kênh còn lại. Giá bán làm tròn đến nghìn từ giá gốc và giảm giá; tỷ lệ giảm thực tế được tính riêng để không nhầm với mức niêm yết.
 
-### 4.1. Câu hỏi 1: Thể loại nào bán chạy nhất & Doanh thu cao nhất?
-*(Tham chiếu file: `charts/01_the_loai_doanh_thu_so_luong.png`)*
+Số cuốn = 1 + Poisson(λ), trong đó λ = 1,5 × S × max(0,5; 1,8 − giá_bán/200.000) × (1 + β × giảm_giá_niêm_yết/30). Cơ sở: β=1; S=1,7 tháng 11–12, S=1,3 tháng 8–9, còn lại S=1. Tám dòng mua số lượng lớn 155–200 cuốn được thêm độc lập để kiểm tra xử lý ngoại lệ. Đây không phải mô hình đã được xác thực dự báo kinh doanh.
 
-* **Số liệu phân tích:**
-  - Thể loại **Kỹ năng sống** giữ vị trí quán quân toàn ngành với tổng doanh thu đạt **1.10 tỷ VNĐ** (chiếm 19.2% thị phần) cùng **11,850 cuốn** bán ra.
-  - Vị trí thứ 2 và thứ 3 thuộc về **Văn học** (đạt **0.95 tỷ VNĐ**, 16.6%, 10,740 cuốn) và **Kinh tế - Quản trị** (đạt **0.91 tỷ VNĐ**, 15.9%, 9,350 cuốn).
-  - Nhóm **Thiếu nhi** đạt doanh thu **0.80 tỷ VNĐ** nhưng có sản lượng bán rất cao (**9,120 cuốn**) nhờ mức giá bìa vừa túi tiền.
-  - Ba nhóm có tỷ trọng thấp nhất là **Truyện tranh - Manga** (0.30 tỷ VNĐ, 5.2%), **Lịch sử - Triết học** (0.22 tỷ VNĐ, 3.8%) và **Nuôi dạy con** (0.16 tỷ VNĐ, 2.8%).
-* **Nhận xét chuyên môn:** 
-  - Cơ cấu doanh thu có mức độ tập trung cao: Top 4 thể loại dẫn đầu đóng góp tới **65.7% tổng doanh thu** toàn hệ thống.
-  - Độc giả Việt Nam ưu tiên các nhóm sách phát triển bản thân, tư duy kinh tế và văn học thư giãn, trong khi các mảng chuyên khảo (Lịch sử, Triết học) là thị trường ngách có quy mô khiêm tốn.
+Tính truy xuất: catalog.csv là danh mục nghiệp vụ đầu vào; ground_truth.csv chỉ dành cho đánh giá. injected_errors.csv mô tả lỗi đã cài; hàm làm sạch không đọc hai tệp kiểm chứng này. SHA-256 của tệp đầu ra được lưu trong manifest.json. Việc ghi metadata và nguồn gốc tham khảo nguyên tắc tái sử dụng dữ liệu [2].
 
----
+# 3. Quy trình làm sạch và quyết định xử lý
 
-### 4.2. Câu hỏi 2: Top 10 Sách, Tác giả và Nhà xuất bản nổi bật
-*(Tham chiếu file: `charts/02_top_10_sach_ban_chay.png` & `charts/03_top_10_tac_gia_nha_xuat_ban.png`)*
+Bước 1: ghi nhận số dòng, thiếu và khóa lặp. Bước 2: chuẩn hóa khoảng trắng, thể loại, kiểu số và tiền tệ. Giá âm/thiếu được phục hồi từ giá gốc và giảm giá niêm yết, sử dụng cùng quy tắc làm tròn nghìn của hệ thống giả lập. Cách sửa này chỉ hợp lệ nếu hai trường cơ sở đáng tin.
 
-* **Số liệu phân tích:**
-  - *Về đầu sách:* Tựa sách đứng đầu doanh thu là **"Thay Đổi Tí Hon Hiệu Quả Bất Ngờ"** đạt **138.4 triệu VNĐ** (với 1,120 cuốn), tiếp theo là **"Đắc Nhân Tâm"** (124.6 triệu VNĐ) và **"Tâm Lý Học Về Tiền"** (118.2 triệu VNĐ).
-  - *Về tác giả:* **Nguyễn Nhật Ánh** là tác giả bán chạy nhất thị trường với tổng lượng bán đạt **3,620 cuốn**, bám sát phía sau là **James Clear** (2,410 cuốn), **Dale Carnegie** (2,280 cuốn) và **Tô Hoài** (1,950 cuốn).
-  - *Về nhà xuất bản:* **NXB Trẻ** dẫn đầu thị trường với **1.15 tỷ VNĐ** (chiếm 20.1% doanh thu), bám sát là **NXB Kim Đồng** đạt **0.98 tỷ VNĐ** (17.1%) và **NXB Hội Nhà Văn** đạt **0.85 tỷ VNĐ** (14.8%).
-* **Nhận xét chuyên môn:**
-  - Danh mục sách bán chạy thể hiện rõ hiện tượng **"Tác giả bảo chứng doanh thu"**: Tên tuổi của các tác giả lớn trong và ngoài nước tạo nên lực hút tự nhiên, giảm thiểu đáng kể chi phí chuyển đổi khách hàng mới.
-  - NXB Trẻ và NXB Kim Đồng chiếm tới hơn 37% thị phần nhờ nắm giữ các đầu sách độc quyền kinh điển và mạng lưới liên kết tác quyền quốc tế mạnh mẽ.
+Các thuộc tính sách thiếu được tra bằng ma_sach trong catalog.csv, một đầu vào độc lập với nhãn lỗi. Bài giả định danh mục đã kiểm tra và bao phủ đủ mã trong kịch bản chính; giả định mạnh này làm bài toán phục hồi dễ hơn thực tế. Nếu không có dữ liệu tra, giữ điểm/năm ở trạng thái thiếu và gắn nhãn không rõ cho tên tác giả/NXB, không tự suy đoán thông tin thư mục.
 
----
+Bước 3: gộp các bản sao có cùng mã dòng và cùng nội dung sau chuẩn hóa. Nếu cùng mã nhưng khác dữ liệu, cách ly tất cả biến thể để xác minh. Không dùng tên sách/ngày/kênh làm khóa thay thế vì các giao dịch độc lập có thể trùng thuộc tính.
 
-### 4.3. Câu hỏi 3: Biến động Doanh thu & Sản lượng theo thời gian (Tháng/Quý)
-*(Tham chiếu file: `charts/04_xu_huong_doanh_thu_thoi_gian.png`)*
+Bước 4: cách ly số lượng không dương, không nguyên hoặc trên 1.000, ngày sai, miền giá trị sai. Ngưỡng 1.000 là quy tắc cần rà soát trong kịch bản, không phải quy luật bán lẻ. Điểm vượt Q3+1,5×IQR chỉ được đánh dấu, không tự xóa [3]; nhờ vậy các dòng mua nhiều vẫn được giữ nếu hợp lệ.
 
-* **Số liệu phân tích:**
-  - Doanh thu hàng tháng dao động từ **185 triệu VNĐ** (tháng 5/2024) đến mức đỉnh kỷ lục **338 triệu VNĐ** (tháng 11/2025), biên độ chênh lệch giữa tháng đáy và tháng đỉnh lên tới **82.7%**.
-  - **Quý 4** là quý kinh doanh thành công nhất trong cả hai năm 2024 và 2025, đóng góp bình quân **31.5% tổng doanh thu cả năm**.
-  - Hai "điểm rơi vàng" về doanh số xuất hiện đều đặn:
-    1. *Đợt 1 (Tháng 8 - Tháng 9):* Mùa Tựu trường giúp doanh thu tăng vọt **38.5%** so với quý 2, tập trung ở mảng sách Thiếu nhi và Ngoại ngữ.
-    2. *Đợt 2 (Tháng 11 - Tháng 12):* Lễ hội Mega Sale (11/11, 12/12, Black Friday) đẩy doanh thu tăng **52.3%** so với mức trung bình các tháng thông thường.
-* **Nhận xét chuyên môn:**
-  - Kinh doanh sách bán lẻ chịu sự chi phối mạnh mẽ của lịch trình học tập và các chiến dịch khuyến mãi lớn của thương mại điện tử. Doanh nghiệp cần chủ động kế hoạch tài chính và kho vận trước tối thiểu 6-8 tuần để đón sóng.
+Tạo đặc trưng dùng một hàm chung: giá <80.000; 80.000≤giá≤200.000; giá>200.000. Điểm: <3,0; [3,0;4,0); [4,0;4,5); ≥4,5; thiếu thành Chưa biết. Quy ước biên được kiểm tra riêng vì pandas.cut mặc định đóng khoảng bên phải [4]. Nhật ký cell_changes ghi thay đổi ô; row_lineage cho biết trạng thái của từng dòng thô.
 
----
+| Bước | Dòng | Ô thiếu | Mã dòng lặp |
+| --- | --- | --- | --- |
+| Nạp dữ liệu | 6660 | 529 | 160 |
+| Chuẩn hóa và khôi phục có căn cứ | 6660 | 0 | 160 |
+| Gộp bản sao cùng mã và cùng nội dung | 6505 | 0 | 5 |
+| Cách ly bất thường và xung đột | 6480 | 0 | 0 |
 
-### 4.4. Câu hỏi 4: Tác động của Mức giảm giá & Giá bán lên Sản lượng bán
-*(Tham chiếu file: `charts/05_tac_dong_giam_gia_va_gia_ban.png`)*
+# 4. Kiểm chứng chất lượng: đúng và đủ là hai tiêu chí
 
-* **Số liệu phân tích:**
-  - Mức giảm giá có mối tương quan thuận rõ rệt với số lượng bán: Nhóm sách giảm giá **26% - 35%** có số lượng bán trung vị đạt **14 cuốn/đơn**, cao gấp **2.3 lần** so với nhóm chỉ giảm **0% - 5%** (trung vị 6 cuốn/đơn).
-  - Về giá bán: Biểu đồ phân tán và đường hồi quy chứng minh rõ ràng quy luật cầu: Khi giá sách vượt qua ngưỡng **200,000 VNĐ**, số lượng bán mỗi đơn giảm bình quân **45.2%** so với phân khúc giá dưới 100,000 VNĐ.
-* **Nhận xét chuyên môn:**
-  - Độ co giãn của cầu theo giá (Price Elasticity) trên thị trường sách trực tuyến là rất cao. Khách hàng dễ bị tác động bởi mức giảm giá phần trăm hiển thị (discount framing effect).
-  - Việc giảm giá sâu (trên 35%) có giúp gia tăng lượng bán nhưng biên lợi nhuận ròng bị xói mòn nếu không được nhà xuất bản trợ giá.
+Trên 6.480 mã dòng giữ lại, tám trường được đối chiếu với dữ liệu chuẩn đều đạt tỷ lệ khớp 100%: giá bán, số lượng, giá trị bán hàng, điểm, năm xuất bản, tác giả, NXB và thể loại. Kết quả chỉ áp dụng cho các trường và lỗi đã thử; không có nghĩa mọi lỗi ngoài thực tế đều được xử lý đúng.
 
----
+Có 25 dòng nguồn bị cách ly, tương ứng 20 mã dòng nghiệp vụ. Năm mã xung đột có hai biến thể mỗi mã. Tỷ lệ giữ lại trên 6.500 mã gốc là 99,692%. Precision/recall cách ly trên tập lỗi biết trước đều bằng 100,0% / 100,0%; mẫu lỗi do tác giả thiết kế nên chưa chứng minh được hiệu năng trên lỗi chưa biết.
 
-### 4.5. Câu hỏi 5: Điểm đánh giá cao có đồng nghĩa với bán chạy không?
-*(Tham chiếu file: `charts/06_tuong_quan_diem_danh_gia_luong_ban.png`)*
+Tổng chuẩn là 2.978.555.000 đồng; tập sạch có 2.969.430.000 đồng, sai lệch -0,306%. Trên đúng tập mã được giữ lại, sai lệch tổng bằng 0 đồng. Khi không thể phục hồi số lượng gốc, việc cách ly là thận trọng nhưng làm thiếu tổng bán hàng; cần công bố mức ảnh hưởng này.
 
-* **Số liệu phân tích:**
-  - Hệ số tương quan tuyến tính Pearson giữa `diem_danh_gia` và `so_luong_da_ban` là **$r = 0.12$** (tương quan dương rất yếu).
-  - Các tựa sách đạt điểm đánh giá tuyệt đối (4.8 - 5.0 sao) có số lượng bán dao động rất rộng: từ 3 cuốn/đơn đến 35 cuốn/đơn. Ngược lại, nhiều tựa sách có điểm đánh giá ở mức khá (4.1 - 4.3 sao) vẫn đạt doanh số khổng lồ nhờ tiếp thị mạnh.
-* **Nhận xét chuyên môn:**
-  - **Tương quan không đồng nghĩa với Nhân quả:** Điểm đánh giá sao cao đóng vai trò là một "bảo chứng chất lượng" (Trust Factor) để khách hàng yên tâm nhấn nút thanh toán, nhưng không phải là động lực chính kích hoạt đơn hàng.
-  - Các yếu tố chi phối lượng bán mạnh nhất trên thực tế là: Mức độ nổi tiếng của tựa sách, ngân sách truyền thông và ưu đãi giá.
+Có 179 dòng bị gắn cờ IQR, gồm cả trường hợp lượng cao hợp lệ. Cần phân biệt kiểm tra hợp lệ theo miền dữ liệu với đánh giá hiếm gặp theo phân phối. Không dùng tỷ lệ ô thiếu bằng 0 làm thước đo duy nhất của chất lượng.
 
----
+Mỗi dòng thô phải có đúng một trạng thái cuối: giữ, gộp bản sao hoặc cách ly. Các kiểm tra tự động còn bao phủ giá trị biên, mâu thuẫn khóa, dữ liệu thiếu danh mục, dòng mua nhiều, các tổng theo nhóm và tái lập cùng seed. Các kết quả thí nghiệm không thay cho xác nhận độc lập của giảng viên.
 
-### 4.6. Câu hỏi 6: Ma trận tương quan đa biến (Correlation Heatmap)
-*(Tham chiếu file: `charts/07_ma_tran_tuong_quan.png`)*
+| Trường kiểm chứng | Khớp / đối chiếu |
+| --- | --- |
+| gia_ban | 6,480 / 6,480 |
+| so_luong | 6,480 / 6,480 |
+| doanh_thu | 6,480 / 6,480 |
+| diem_danh_gia | 6,480 / 6,480 |
+| nam_xuat_ban | 6,480 / 6,480 |
+| tac_gia | 6,480 / 6,480 |
+| nha_xuat_ban | 6,480 / 6,480 |
+| the_loai | 6,480 / 6,480 |
 
-* **Số liệu phân tích:**
-  - `doanh_thu` có tương quan rất mạnh với `so_luong_da_ban` ($r = 0.76$) và tương quan dương vừa phải với `gia_ban` ($r = 0.44$).
-  - `phan_tram_giam_gia` có tương quan dương với `so_luong_da_ban` ($r = 0.35$), khẳng định tác động kích cầu của chính sách khuyến mãi.
-  - `gia_goc` và `gia_ban` có tương quan mật thiết ($r = 0.94$).
-  - `so_luot_danh_gia` có tương quan dương khá với `so_luong_da_ban` ($r = 0.58$), phản ánh vòng lặp tích lũy bằng chứng xã hội (Social Proof).
-* **Nhận xét chuyên môn:**
-  - Chiến lược tối đa hóa doanh thu trong ngắn hạn dựa chủ yếu vào việc gia tăng khối lượng bán hàng (Volume-driven strategy) hơn là phụ thuộc vào việc tăng giá bìa.
+# 5. Thể loại và cơ cấu giá trị bán hàng
 
----
+Trong kịch bản cơ sở, Kỹ năng sống dẫn đầu giá trị bán hàng với 638.410.000 đồng, chiếm 21,50%; lượng bán là 6.122 cuốn. Đây là tổng hợp trên tập sạch gồm 6.480 dòng. Hình 1 tách hai thước đo để không so chiều cao cột ở các đơn vị khác nhau.
 
-### 4.7. Câu hỏi 7: Cơ cấu Doanh thu theo Phân khúc giá & Kênh bán
-*(Tham chiếu file: `charts/08_co_cau_doanh_thu_phan_khuc_kenh_ban.png`)*
+Khác biệt giữa các thể loại đến từ trọng số chọn sách đã thiết lập, danh mục giá và lượng mua ngẫu nhiên. Một nhóm đóng góp nhiều không chứng minh nhu cầu thị trường lớn hơn hoặc nên được nhập thêm; muốn đưa ra quyết định nhập hàng cần thêm tồn kho, vòng quay, chi phí và dữ liệu thực.
 
-* **Số liệu phân tích:**
-  - *Theo Phân khúc giá:*
-    + **Trung bình (80k - 200k):** Đạt **3.47 tỷ VNĐ** (chiếm **60.6%** tổng doanh thu).
-    + **Giá rẻ (< 80k):** Đạt **1.66 tỷ VNĐ** (chiếm **29.0%** doanh thu).
-    + **Cao cấp (> 200k):** Đạt **0.61 tỷ VNĐ** (chiếm **10.6%** doanh thu).
-  - *Theo Kênh bán hàng:*
-    + **Shopee Mall:** Giữ vị thế áp đảo với **2.06 tỷ VNĐ** (chiếm **36.0%** thị phần).
-    + **TikTok Shop:** Tăng trưởng vượt bậc đạt **1.37 tỷ VNĐ** (chiếm **23.9%**).
-    + **Tiki Trading:** Đạt **1.09 tỷ VNĐ** (chiếm **19.0%**).
-    + **Cửa hàng Offline:** Đạt **0.71 tỷ VNĐ** (chiếm **12.4%**).
-    + **Website Nhà sách:** Đạt **0.50 tỷ VNĐ** (chiếm **8.7%**).
-* **Nhận xét chuyên môn:**
-  - Hai kênh Social & E-commerce (Shopee + TikTok Shop) đóng góp tới **59.9% tổng doanh thu**, cho thấy hành vi mua sách của giới trẻ đã dịch chuyển gần như hoàn toàn sang nền tảng số.
-  - Phân khúc giá từ 80,000 đến 200,000 VNĐ là "điểm ngọt" thị trường, cân bằng hoàn hảo giữa khả năng chi trả của người đọc và tỷ suất sinh lời của nhà bán lẻ.
+Ứng dụng thực hành là theo dõi sự tập trung của giá trị bán hàng và xác định nhóm cần phân tích sâu. Khi triển khai ở nhà sách thật, cần kiểm tra khả năng thiếu đơn theo kênh, khác biệt danh mục và chính sách phân loại trước khi so sánh.
 
----
+![5. Thể loại và cơ cấu giá trị bán hàng](../charts/01_genre.png)
 
-## 5. TỔNG HỢP INSIGHT & ĐỀ XUẤT KINH DOANH KHẢ THI
+# 6. Danh mục sách và cách đọc xếp hạng
 
-### 5.1. Bảy Insight cốt lõi (Key Insights)
-1. **Hiệu ứng Pareto rõ nét:** Ba thể loại Kỹ năng sống, Văn học và Kinh tế đem lại hơn 51% doanh số; trong khi top 10% tựa sách đem lại hơn 38% lợi nhuận gộp.
-2. **Kênh trực tuyến chiếm thế thượng phong:** Hơn 87% doanh thu phát sinh trên môi trường số (Shopee, TikTok, Tiki, Web), trong đó TikTok Shop nổi lên như kênh bán lẻ có tốc độ tăng trưởng nhanh nhất.
-3. **Mùa vụ chi phối dòng tiền:** Doanh thu Quý 4 cao hơn Quý 2 tới 45%, tạo áp lực rất lớn lên việc quản trị dòng vốn lưu động và dự báo chuỗi cung ứng.
-4. **Vùng giá tối ưu 80k - 200k:** Sách trong khoảng giá này đạt tỷ lệ chuyển đổi giỏ hàng cao gấp 3 lần so với sách trên 200k.
-5. **Đòn bẩy khuyến mãi 20% - 30%:** Đây là biên độ giảm giá tối ưu để kích hoạt quyết định mua sắm của khách hàng mà không làm giảm quá sâu biên lợi nhuận.
-6. **Giá trị thương hiệu tác giả bền vững:** Các tác phẩm của các tác giả gạo cội (Nguyễn Nhật Ánh, James Clear, Dale Carnegie) tạo ra doanh thu tái bản đều đặn hàng năm (Evergreen titles).
-7. **Bằng chứng xã hội (Social Proof) là rào cản chuyển đổi:** Lượt đánh giá và điểm sao tạo tiền đề niềm tin; các sản phẩm dưới 4.0 sao có tỷ lệ bỏ giỏ hàng tăng cao đột biến.
+Mã BK0009 có giá trị bán hàng cao nhất trong kịch bản cơ sở: 47.701.000 đồng, 429 cuốn trên 49 dòng. Danh sách xếp hạng được nhóm theo mã sách và tên giả lập, không gộp bằng tên mơ hồ hoặc tách một mã vì ô tác giả bị thiếu.
 
----
+Sách đứng đầu có thể chịu ảnh hưởng của vài dòng mua số lượng lớn; nên xem đồng thời số dòng, tổng cuốn và giá trị, thay vì chỉ dùng một chỉ tiêu. Danh sách này chỉ phục vụ minh họa quy trình phân tích danh mục, không đánh giá tác phẩm hoặc cá nhân ngoài đời.
 
-### 5.2. Năm Đề xuất chiến lược kinh doanh khả thi (Actionable Recommendations)
+Bảng đầy đủ theo tác giả và NXB giả lập nằm trong results/author.csv và publisher.csv. Không chọn các tên ngẫu nhiên để đưa ra kiến nghị ký bản quyền hoặc khẳng định uy tín. Các bảng này có giá trị kiểm tra phép nhóm và đối soát tổng.
 
-| STT | Trụ cột chiến lược | Đề xuất hành động cụ thể | KPI đo lường dự kiến |
-| :---: | :--- | :--- | :--- |
-| **1** | **Chiến lược Nhập hàng & Tồn kho** | Tăng lượng nhập hàng trước tháng 7 cho dòng sách Thiếu nhi & Ngoại ngữ (đón mùa Tựu trường) và trước tháng 10 cho dòng Kỹ năng sống & Kinh tế (đón Mega Sale). Cắt giảm 40% lượng tồn kho dòng sách Lịch sử, Nuôi dạy con. | Vòng quay hàng tồn kho (Inventory Turnover) tăng từ 3.2 lên **4.5 vòng/năm**; giảm 30% chi phí lưu kho. |
-| **2** | **Chiến lược Định giá & Khuyến mãi** | Áp dụng chiến lược giá niêm yết linh hoạt để tạo mức chiết khấu hiển thị 20% - 28% trên sàn E-commerce; thiết lập giá bán thực tế quanh mức 95.000 - 145.000 VNĐ. Thiết kế combo "Sách Kỹ năng + Bookmark/Sổ tay" để đẩy giá trị trung bình giỏ hàng (AOV). | Giá trị đơn hàng trung bình (AOV) tăng **18%**; biên lợi nhuận ròng duy trì ổn định $\ge 15\%$. |
-| **3** | **Tập trung Kênh phân phối** | Dồn 70% ngân sách quảng cáo số vào Shopee Ads và TikTok Shop Live Shopping. Tận dụng mô hình Affiliate Booking KOC trên TikTok để review sách theo trend ngắn. | Doanh số TikTok Shop tăng trưởng **40% YoY**; giảm chi phí chuyển đổi khách hàng (CAC) xuống dưới 25.000 VNĐ/đơn. |
-| **4** | **Chiến lược Khai thác Tác quyền** | Ưu tiên đàm phán ký kết hợp đồng độc quyền và bản quyền tái bản dài hạn với các tác giả Top 10 và các NXB lớn (NXB Trẻ, Kim Đồng). Xây dựng các phiên bản bìa cứng, bản đặc biệt (Special Edition) cho các tựa sách kinh điển để bán phân khúc cao cấp (>250k). | Tăng tỷ trọng đóng góp của dòng sách độc quyền lên **45%** tổng doanh số. |
-| **5** | **Chuyển đổi Khách hàng Đa kênh (Omnichannel)** | Dùng phiếu giảm giá kẹp trong gói hàng Shopee/TikTok để hướng dẫn khách quét mã QR đăng ký thành viên trên Website/App riêng của nhà sách. Biến cửa hàng Offline thành điểm trải nghiệm, giao lưu tác giả và giao nhận đơn hàng (BOPIS). | Tỷ lệ khách hàng mua lại (Repeat Purchase Rate) trên Website tăng từ 8% lên **18%** trong 12 tháng. |
+![6. Danh mục sách và cách đọc xếp hạng](../charts/02_books.png)
 
----
+# 7. Diễn biến thời gian trong kịch bản
 
-## 6. HẠN CHẾ CỦA PHÂN TÍCH & HƯỚNG PHÁT TRIỂN
+Tháng cao nhất là 2024-11: 167.555.000 đồng; thấp nhất 2025-02: 93.928.000 đồng. Chênh lệch đỉnh so với đáy = 78,39%. Tăng trưởng năm 2025 so với 2024 trong dữ liệu là -1,31%; mô hình không cài xu hướng tăng trưởng riêng theo năm nên không diễn giải con số này thành tốc độ tăng trưởng thị trường.
 
-### 6.1. Hạn chế hiện tại
-* **Phương pháp sinh dữ liệu:** Dữ liệu được mô phỏng có kiểm soát (Synthetic Data) do rào cản truy cập API của các sàn TMĐT; dù đã phản ánh sát logic thị trường Việt Nam nhưng vẫn chưa bao hàm đầy đủ các biến động ngoại cảnh bất ngờ (như khủng hoảng giấy in, thay đổi thuật toán hiển thị của sàn).
-* **Thiếu biến số chi phí:** Tập dữ liệu hiện tại chỉ tập trung vào Doanh thu thuần và Giá bán, chưa ghi nhận Chi phí vốn hàng bán (COGS), Phí sàn TMĐT (8-12%) và Chi phí quảng cáo (Ad Spend), do đó chưa tính toán được Lợi nhuận ròng (Net Profit) theo từng đơn vị sản phẩm.
-* **Tỷ lệ hoàn trả:** Chưa tính đến tỷ lệ hủy đơn hoặc hoàn hàng (Return Rate), vốn thường dao động từ 3-7% trên các kênh thương mại điện tử.
+Mùa vụ tháng 8–9 và 11–12 được chủ động cài vào λ. Biểu đồ cho thấy kết quả tổng hợp của cơ chế này cùng nhiễu ngẫu nhiên, số ngày/tháng và các đơn mua nhiều. Hai năm mô phỏng không đủ để xác nhận tính ổn định của mùa vụ thực.
 
-### 6.2. Hướng mở rộng tiếp theo
-1. **Tích hợp mô hình dự báo chuỗi thời gian (Time-series Forecasting):** Áp dụng thuật toán Prophet hoặc SARIMAX để dự báo chính xác nhu cầu nhập hàng theo từng tuần cho từng đầu sách trước các đợt cao điểm.
-2. **Xây dựng hệ thống gợi ý sách (Recommendation System):** Ứng dụng Collaborative Filtering hoặc Content-based Filtering để gợi ý sách kèm theo giỏ hàng dựa trên sở thích đọc tương đồng của khách hàng.
-3. **Phân tích độ co giãn của giá (Price Elasticity Modeling):** Xây dựng mô hình định giá động (Dynamic Pricing) theo thời gian thực để tự động điều chỉnh mức chiết khấu theo từng khung giờ và sự kiện.
+Ứng dụng là cách xây dựng bảng theo thời gian và chuẩn bị giả thuyết để kiểm tra ở dữ liệu thật. Cần nhiều chu kỳ, lịch khuyến mãi thực, số ngày hoạt động và mức tồn kho trước khi lập dự báo nhập hàng. Bài không đưa ra dự báo Prophet/SARIMAX khi chưa có thiết kế đánh giá ngoài mẫu.
 
----
+![7. Diễn biến thời gian trong kịch bản](../charts/03_month.png)
 
-*Báo cáo được hoàn thành bởi Antigravity Data Intelligence & Data Engineering Team.*
+# 8. Giá, giảm giá và lượng bán
+
+Tương quan Pearson theo dòng giữa giảm giá thực tế và lượng là 0,173. Hình 4 dùng boxplot với thang log ở trục lượng để hiển thị cả giao dịch nhỏ và dòng mua nhiều; các nhóm được xác định bằng giảm giá niêm yết, còn hệ số tương quan dùng mức thực tế sau làm tròn.
+
+Cơ chế sinh lượng chứa cả giá bán và mức giảm. Do đó quan hệ quan sát được một phần đã nằm trong công thức; không thể dùng nó để chứng minh khách hàng phản ứng với nhãn giảm giá hay xác định mức chiết khấu tối ưu. Khác biệt kênh và giá gốc cũng có thể làm thay đổi cấu trúc các nhóm.
+
+Nếu muốn nghiên cứu tác động khuyến mãi trên dữ liệu thực, cần dữ liệu tiếp xúc/đơn hàng theo thời gian, cách chọn nhóm so sánh, yếu tố gây nhiễu và tốt nhất là thí nghiệm có thiết kế phù hợp. Muốn tối ưu lợi nhuận phải có chi phí; tổng doanh thu và tổng lượng không thay được biên lợi nhuận.
+
+![8. Giá, giảm giá và lượng bán](../charts/04_discount.png)
+
+# 9. Điểm sách và tổng lượng ở cấp mã sách
+
+Điểm là thuộc tính giả lập cố định của sách. Vì một sách có nhiều dòng, hình chính tổng hợp lên cấp ma_sach, n=300. Pearson giữa điểm và tổng cuốn ở cấp sách là 0,117; hệ số ở cấp dòng là 0,009. Hai giá trị trả lời hai câu hỏi khác nhau, không thể thay thế tùy ý.
+
+Điểm được sinh độc lập với cơ chế chọn sách và lượng, nên kết quả không cung cấp bằng chứng về vai trò của đánh giá thật. Không có lịch sử đánh giá, lượt xem, quảng cáo hoặc đo niềm tin để giải thích hành vi khách hàng.
+
+Có 6.480 dòng có điểm trong kịch bản đầy đủ danh mục; 74,18% số dòng có điểm từ 4 trở lên. Đây là tỷ lệ dòng mang điểm sách giả lập, không phải tỷ lệ khách hàng hài lòng. Bài không tính p-value từ các dòng lặp của cùng sách.
+
+![9. Điểm sách và tổng lượng ở cấp mã sách](../charts/05_rating.png)
+
+# 10. Tương quan và biến được tính từ công thức
+
+Ma trận Hình 6 là mô tả Pearson ở cấp dòng, gồm cả dòng mua nhiều. Hệ số tuyến tính nhạy với những quan sát lớn, không bao quát mọi quan hệ phi tuyến. Kết quả ở cấp sách và phân tích bỏ dòng >150 cuốn được tách riêng, không thay đổi âm thầm tập quan sát.
+
+Giá trị bán hàng được định nghĩa bằng giá bán × số lượng; giảm giá thực tế được định nghĩa từ giá bán/giá gốc. Vì vậy nhiều ô tương quan xuất hiện từ chính quan hệ tính toán. Chúng không là bằng chứng độc lập để chọn chiến lược tăng giá hay tăng sản lượng.
+
+Các bảng số gốc results/correlation.csv và describe.csv cho phép kiểm tra hệ số và phân phối. Khi áp dụng cho dữ liệu thực, cần xác định thời điểm đo từng biến và cách gom quan sát phụ thuộc; không diễn giải tương quan thành nguyên nhân.
+
+![10. Tương quan và biến được tính từ công thức](../charts/06_correlation.png)
+
+# 11. Kênh và phân khúc giá
+
+Giá bình quân có trọng số theo cuốn là 96.441 đồng; được tính từ tổng giá trị / tổng cuốn. Hình 7 dùng cùng mẫu số là toàn bộ 2.969.430.000 đồng trong tập sạch, bao gồm mọi kênh và phân khúc.
+
+Tỷ trọng kênh thể hiện xác suất chọn kênh, giảm giá và số lượng trong mô hình. Tỷ trọng cao không cho biết tốc độ tăng, chi phí thu hút khách, lợi nhuận hay mức dịch chuyển hành vi. Phân khúc giá đóng góp nhiều cũng không chứng minh giá tối ưu, vì số bản ghi và danh mục giá trong nhóm khác nhau.
+
+Dashboard có bộ lọc năm/kênh và tính lại KPI từ tập được chọn. Mỗi lần lọc thay đổi mẫu số; người dùng cần ghi rõ bộ lọc khi trích số. Dashboard chạy ngoại tuyến và không sử dụng chỉ số viết cố định như tăng trưởng hoặc mức hài lòng.
+
+![11. Kênh và phân khúc giá](../charts/07_composition.png)
+
+# 12. Phân tích độ nhạy và độ bất định mô phỏng
+
+Ba kịch bản dùng seed 100 đến 149: cơ sở; đặt β=0; đặt S=1 cho mọi tháng. Mỗi kịch bản có 50 lần sinh độc lập theo seed. Đây là so sánh có ghép seed, không phải can thiệp ngẫu nhiên trên người mua thật. Quy mô được chọn để minh họa độ dao động và thời gian chạy phù hợp học phần; chưa tuyên bố hội tụ cho mọi chỉ tiêu.
+
+Kịch bản bỏ β chỉ loại đường tác động trực tiếp của phần trăm giảm giá lên λ; giá bán vẫn thay đổi khi giảm giá thay đổi, nên tương quan có thể còn lại. Kịch bản bỏ mùa vụ vẫn có số ngày/tháng không bằng nhau và nhiễu. Việc chỉ thay một giả định giúp giải thích nguồn của kết quả thay vì khẳng định tính bền vững chung.
+
+Tệp sensitivity_summary.csv lưu trung bình, độ lệch chuẩn giữa các lần chạy, MCSE = SD/√R và các phân vị thực nghiệm 2,5%–97,5%. MCSE đo độ chính xác Monte Carlo của trung bình trên mô hình này. Các phân vị không là khoảng tin cậy thị trường. Với 50 lần chạy, ước lượng đuôi còn thô; có thể tăng R bằng tham số lệnh.
+
+Kết quả: r trung bình sau bỏ dòng >150 cuốn đổi từ 0,468 ở cơ sở xuống 0,087 khi β=0. Tỷ trọng Q4 giảm từ 29,95% xuống 25,33% khi bỏ mùa vụ. Hình 8 chỉ loại dòng mua nhiều cho chỉ tiêu tương quan; báo cáo chính vẫn giữ các dòng hợp lệ. Kết quả cho thấy những nhận xét về giảm giá/mùa vụ phụ thuộc cơ chế sinh.
+
+![12. Phân tích độ nhạy và độ bất định mô phỏng](../charts/08_sensitivity.png)
+
+| Kịch bản | Q4 (%) | r (bỏ >150) | Sai lệch T (%) |
+| --- | --- | --- | --- |
+| Cơ sở | 29,95 | 0,468 | -0,315 |
+| Không hệ số giảm giá | 29,32 | 0,087 | -0,319 |
+| Không mùa vụ | 25,33 | 0,474 | -0,317 |
+
+# 13. Điền khuyết: lợi ích và giới hạn
+
+Kịch bản chính khôi phục thuộc tính sách từ danh mục được giả định đáng tin. Đây là đối chiếu nghiệp vụ, không phải suy luận điểm đánh giá từ các giao dịch tương tự. Một kiểm tra riêng loại bỏ thông tin tra cứu và che ngẫu nhiên 2%, 10%, 25% điểm trên dữ liệu chuẩn, dùng cùng seed 42.
+
+So sánh giữ thiếu với điền trung bình theo thể loại. MAE chỉ được tính trên những ô bị che và được điền; phương án giữ thiếu không có MAE phục hồi vì không tạo dự đoán. Giữ thiếu làm giảm độ bao phủ nhưng tránh gán độ chính xác giả; điền trung bình đủ ô nhưng không khôi phục được khác biệt từng sách.
+
+Đây là thí nghiệm chẩn đoán với một seed và cơ chế thiếu được cài ngẫu nhiên, chưa phải đánh giá toàn diện. Nếu điểm thấp dễ bị thiếu hơn hoặc danh mục sai, kết quả có thể khác. Dữ liệu thật cần kiểm tra nguyên nhân thiếu và phân tích nhiều cơ chế trước khi chọn phương pháp.
+
+Thử nghiệm tự động cũng cung cấp danh mục rỗng để đảm bảo chương trình giữ điểm thiếu và ghi không rõ tác giả thay vì tự bịa. Các cờ khoi_phuc_* đi cùng dữ liệu sạch giúp tách dữ liệu quan sát với dữ liệu được phục hồi.
+
+| Tỷ lệ che | Phương pháp | Bao phủ | MAE ô điền |
+| --- | --- | --- | --- |
+| 2% | Giữ thiếu | 98,0% | Không áp dụng |
+| 2% | Trung bình thể loại | 100,0% | 0,365 |
+| 10% | Giữ thiếu | 90,0% | Không áp dụng |
+| 10% | Trung bình thể loại | 100,0% | 0,384 |
+| 25% | Giữ thiếu | 75,0% | Không áp dụng |
+| 25% | Trung bình thể loại | 100,0% | 0,390 |
+
+# 14. Ý nghĩa thực hành, hạn chế và kết luận
+
+Ứng dụng có thể chuyển sang nhà sách thật là quy trình quản trị dữ liệu: dùng mã dòng ổn định; giữ danh mục sách đã xác minh; tách dữ liệu nguồn và dữ liệu xử lý; cách ly thay vì xóa mất dấu; đối soát tổng; công khai bộ lọc và mẫu số. Các bảng EDA có thể hỗ trợ hình thành câu hỏi về danh mục, kênh và thời điểm, sau đó kiểm tra bằng dữ liệu kinh doanh thực.
+
+Không có căn cứ trong bài để cắt tồn kho 40%, dồn ngân sách 70%, cam kết lợi nhuận 15% hay dự báo tăng trưởng 40%. Nếu cần các quyết định này, nhóm phải thu thập tồn kho, giá vốn, phí, quảng cáo, hủy/hoàn và dữ liệu khách hàng được phép sử dụng; đồng thời xác định thiết kế đánh giá phù hợp.
+
+Hạn chế chính: mọi tham số chưa hiệu chỉnh; danh mục hoàn toàn giả lập; chỉ một loại đơn một đầu sách; chỉ 300 sách và 2 năm; lỗi cài trước có dạng đơn giản; danh mục chuẩn đáng tin là giả định mạnh; thiếu ngẫu nhiên không đại diện mọi cơ chế; 50 lần mô phỏng cho mỗi kịch bản chưa đủ để khảo sát mọi trường hợp; không đo ngoại lực và chi phí.
+
+Kết luận: bài hoàn thành chu trình xây dựng, xử lý, EDA và trực quan hóa trên dữ liệu mô phỏng, có đối soát bằng dữ liệu chuẩn và đánh giá ảnh hưởng của loại bản ghi. Kết quả cho thấy có thể phục hồi chính xác các trường đã kiểm tra trên tập giữ lại nhưng tổng kỳ vẫn thiếu do cách ly. Ý nghĩa khoa học nằm ở tính kiểm chứng và việc nhận biết giới hạn, không ở khẳng định một quy luật thị trường mới.
+
+Hướng tiếp theo hợp lý là lấy một bộ giao dịch ẩn danh có quyền sử dụng từ nhà sách, xác minh danh mục và so sánh phân phối với mô hình. Chỉ sau đó mới hiệu chỉnh tham số hoặc đề xuất dự báo; nếu không có dữ liệu thật, mở rộng các cơ chế lỗi và số lần mô phỏng, công khai chúng là thí nghiệm giả lập.
+
+Trách nhiệm nhóm: điền thông tin học phần, thành viên và đóng góp có thật; đọc và chạy lại notebook; có thể giải thích các giả định và giới hạn; khai báo hỗ trợ AI theo yêu cầu của lớp. Bản này không xác nhận một khảo sát doanh nghiệp hoặc thu thập thị trường chưa từng diễn ra.
+
+# Tài liệu tham khảo và chỉ dẫn tái lập
+
+[1] Morris, T. P., White, I. R. và Crowther, M. J. (2019). Using simulation studies to evaluate statistical methods. Statistics in Medicine, 38, 2074–2102. DOI: 10.1002/sim.8086. https://pmc.ncbi.nlm.nih.gov/articles/PMC6492164/ (Truy cập 08/11/2026).
+
+[2] GO FAIR Foundation. The FAIR Guiding Principles. Hướng dẫn về metadata và nguồn gốc dữ liệu. https://www.gofair.foundation/fair-principles (Truy cập 08/11/2026).
+
+[3] NIST/SEMATECH. e-Handbook of Statistical Methods, 1.3.3.7: Box Plot. https://www.itl.nist.gov/div898/handbook/eda/section3/boxplot.htm (Truy cập 08/11/2026).
+
+[4] pandas. API reference: pandas.cut. Quy ước đầu mút khi phân nhóm. https://pandas.pydata.org/docs/reference/api/pandas.cut.html (Truy cập 08/11/2026).
+
+Nguồn sơ cấp của mọi con số mới: data/processed/book_sales_clean.csv, results/*.csv và results/metrics.json. Mã sinh và nhãn lỗi: src/data_generator.py, data/reference/ground_truth.csv, data/audit/injected_errors.csv. Nguồn cũ để truy xuất thay đổi: Kohaku1709/Kinh-doanh-sach-, commit 6bfe691904b4d721ee1a1743509f6b581b70ce81; các kết quả cũ không được sử dụng như số liệu của bản nghiên cứu mới.
+
+Tái lập: Python 3.12; cài requirements.txt (hoặc requirements-lock.txt để dùng toàn bộ phiên bản đã kiểm thử); chạy python run.py --replications 50; chạy python -m pytest -q; chạy python tools/execute_notebook.py. Notebook đọc dữ liệu nguồn và gọi chung hàm xử lý, sau đó đối soát với CSV được pipeline xuất.
+
+README.md là điểm bắt đầu; docs/QUY-TRINH.md mô tả phương pháp; data/data_dictionary.md định nghĩa trường; docs/DOI-SOAT-BAN-CU.md lưu các số tính lại từ bản gốc; docs/PHAN-VIEC-NHOM.md ghi phần công việc cần nhóm cung cấp. Các nguồn phương pháp trên không chứng minh tính đại diện của dữ liệu.

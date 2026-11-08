@@ -1,55 +1,60 @@
-# TỪ ĐIỂN DỮ LIỆU KINH DOANH SÁCH (DATA DICTIONARY)
+# Từ điển dữ liệu và hợp đồng phân tích
 
-Bộ dữ liệu ghi nhận thông tin bán sách tại thị trường Việt Nam (giai đoạn 2024 - 2025), gồm dữ liệu giao dịch bán lẻ đa kênh với các thuộc tính sách, tài chính, phân loại và phản hồi của người tiêu dùng.
+Mọi dữ liệu đều giả lập. Một dòng nghiệp vụ là một đơn chứa một đầu sách, có thể nhiều cuốn. CSV dùng UTF-8 BOM; tiền là đồng, số lượng là cuốn. Không có thông tin cá nhân. Kiểu dưới đây là kiểu logic; CSV không lưu kiểu pandas/category.
 
----
+## Các tệp
 
-## 1. Dữ liệu thô ban đầu (`data/raw/book_sales_raw.csv`)
+| Tệp | Vai trò / khóa |
+|---|---|
+| `reference/catalog.csv` | 300 sách giả lập; `ma_sach` duy nhất. Đầu vào có thể dùng để phục hồi thuộc tính sách. |
+| `reference/ground_truth.csv` | 6.500 dòng trước khi cài lỗi; `ma_dong` duy nhất. Chỉ dùng đánh giá, không làm đầu vào làm sạch. |
+| `raw/book_sales_raw.csv` | 6.660 dòng có lỗi và bản sao; `raw_row_id` duy nhất, `ma_dong` có thể lặp. |
+| `processed/book_sales_clean.csv` | 6.480 dòng cơ sở sau xử lý; một mã dòng/một mã đơn trong kịch bản. |
+| `audit/injected_errors.csv` | Cột mã dòng, cột bị lỗi, loại lỗi, giá trị chuẩn trước lỗi; chỉ dùng kiểm chứng. |
+| `audit/cell_changes.csv` | `raw_row_id`, `ma_dong`, `cot`, `truoc`, `sau`. Có cả thay đổi biểu diễn kiểu số, không chỉ thay đổi giá trị nghiệp vụ. |
+| `audit/row_lineage.csv` | Một trạng thái cuối cho mỗi raw_row_id: retained, duplicate_collapsed, conflicting_line_id, quantity_needs_review hoặc invalid_required_fields. |
+| `audit/quarantine.csv` | Các biến thể chưa đủ tin cậy để đưa vào EDA, có cột `ly_do`; không xóa mất dấu. |
+| `audit/cleaning_stages.csv` | Dòng, ô thiếu và mã lặp theo giai đoạn. Ô thiếu tính trên các trường nghiệp vụ gốc, không tính cờ/đặc trưng mới. |
 
-| Tên cột | Kiểu dữ liệu gốc | Ý nghĩa | Ví dụ / Giá trị hợp lệ | Ghi chú & Lỗi thực tế |
-| :--- | :--- | :--- | :--- | :--- |
-| `ma_sach` | String | Mã định danh duy nhất của đầu sách | `BK00001`, `BK00845` | Định dạng tiền tố `BK` + 5 chữ số |
-| `ten_sach` | String | Tên tựa sách xuất bản | `Thay Đổi Tí Hon Hiệu Quả Bất Ngờ`, `Mắt Biếc` | Tựa sách phổ biến trên thị trường |
-| `tac_gia` | String | Tên tác giả hoặc dịch giả chính | `James Clear`, `Nguyễn Nhật Ánh` | Có khoảng 45 dòng bị thiếu (`NaN`) |
-| `the_loai` | String | Thể loại sách theo danh mục bán lẻ | `Kỹ năng sống`, `Văn học`, `Kinh tế - Quản trị`... | 10 thể loại; tồn tại lỗi chữ hoa, thường và khoảng trắng |
-| `nha_xuat_ban` | String | Đơn vị xuất bản phát hành | `NXB Trẻ`, `NXB Kim Đồng`, `NXB Hội Nhà Văn`... | 8 nhà xuất bản lớn; có lỗi khoảng trắng và thiếu giá trị |
-| `nam_xuat_ban` | Float/Int | Năm phát hành ấn bản sách | `2015` - `2024` | Chứa ~85 giá trị thiếu (`NaN`) |
-| `gia_goc` | Integer | Giá bìa niêm yết của sách (VNĐ) | `85000`, `150000`, `280000` | Dao động từ 45.000 đến 350.000 VNĐ |
-| `gia_ban` | Object (String/Num) | Giá bán thực tế tới khách hàng | `72000`, `"120,000 VNĐ"`, `-50000`, `0` | Có lỗi chuỗi ký tự, giá trị âm và giá bằng 0 |
-| `phan_tram_giam_gia` | Float | Tỷ lệ giảm giá so với giá gốc (%) | `0.0`, `15.0`, `35.0` | Phạm vi hợp lý: 0% - 50% |
-| `so_luong_da_ban` | Integer | Số cuốn bán ra trong giao dịch | `1`, `5`, `12`, `99999`, `-10` | Có lỗi giá trị âm và ngoại lai nhập liệu |
-| `diem_danh_gia` | Float | Điểm đánh giá trung bình (thang 5) | `4.6`, `4.8`, `3.9`, `NaN` | ~110 dòng bị thiếu giá trị |
-| `so_luot_danh_gia` | Integer | Tổng số lượt khách hàng nhận xét | `18`, `154`, `1280` | Phân phối theo độ thịnh hành của sách |
-| `ngay_ban` | String | Ngày phát sinh giao dịch bán hàng | `2024-05-18`, `2025-11-11` | Định dạng chuẩn `YYYY-MM-DD` |
-| `kenh_ban` | String | Kênh phân phối phát sinh đơn hàng | `Shopee Mall`, `TikTok Shop`, `Tiki Trading`, `Cửa hàng Offline`, `Website Nhà sách` | 5 kênh bán lẻ chính |
+## Trường đầu vào
 
----
+| Trường | Kiểu logic / miền | Ý nghĩa và nguồn |
+|---|---|---|
+| `raw_row_id` | Chuỗi R + 6 số | Định danh dòng nguồn sau thêm bản sao; chỉ raw/clean/audit có. |
+| `ma_dong` | Chuỗi L + 6 số | Định danh dòng nghiệp vụ; bản sao phải giữ nguyên mã. |
+| `ma_don` | Chuỗi O + 6 số | Đơn một đầu sách theo giả định mô hình; chưa hỗ trợ giỏ nhiều đầu sách. |
+| `ma_sach` | Chuỗi BK + 4 số | Mã sách giả lập, nối catalog nhiều-một. |
+| `ten_sach` | Chuỗi | Sách mô phỏng 001…300; không mô tả xuất bản thật. |
+| `the_loai` | Danh mục 10 giá trị | Thứ tự và xác suất trong config.py. |
+| `tac_gia` | Chuỗi giả lập / không rõ | Nhãn danh mục, không là người thật; thiếu tra catalog, nếu không có thì giữ nhãn không rõ. |
+| `nha_xuat_ban` | Chuỗi giả lập / không rõ | Không đại diện đơn vị xuất bản thực. |
+| `nam_xuat_ban` | Số nguyên / thiếu | Cơ sở sinh 2015–2023; kiểm tra chấp nhận 1900–2023. |
+| `gia_goc` | Số nguyên đồng, >0 | Giá bìa giả lập, sinh 45.000–350.000; nguồn catalog. |
+| `gia_ban` | Số nguyên đồng, 0<giá≤giá gốc | Giá sau giảm làm tròn nghìn; raw có thể là chuỗi tiền hoặc giá sai. |
+| `giam_gia_niem_yet` | Phần trăm [0,100) | Mức giảm giả lập trước làm tròn; đầu vào được giả định đáng tin khi sửa giá. |
+| `so_luong` | Nguyên dương | Cuốn/dòng; >1.000 được cách ly để rà soát theo quy tắc kịch bản. |
+| `diem_danh_gia` | Số [1,5] hoặc thiếu | Thuộc tính sách giả lập cố định trước kỳ bán, không là nhận xét trên từng đơn hay dữ liệu tương lai. |
+| `ngay_ban` | YYYY-MM-DD | Nằm trong 2024-01-01 đến 2025-12-31. |
+| `kenh_ban` | Sàn A/B/C, Cửa hàng, Website | Nhãn giả lập; chỉ trọng số chọn và tập mức giảm khác nhau. |
 
-## 2. Dữ liệu sau xử lý & làm giàu đặc trưng (`data/processed/book_sales_clean.csv` / `.xlsx`)
+## Trường sau xử lý
 
-Sau quy trình làm sạch (loại bỏ trùng lặp, xử lý missing values, sửa định dạng số, chuẩn hóa chuỗi, xử lý ngoại lai IQR) và tạo đặc trưng (Feature Engineering):
+| Trường | Định nghĩa |
+|---|---|
+| `doanh_thu` | `gia_ban × so_luong`. Tên kỹ thuật kế thừa; nghĩa dùng trong báo cáo: giá trị bán hàng sau giảm giá, chưa trừ hoàn/hủy, phí, thuế hay chi phí. Không gọi là lợi nhuận/doanh thu thuần. |
+| `giam_gia_thuc_te` | `100 × (1 − gia_ban/gia_goc)`, làm tròn 3 chữ số thập phân; có thể khác mức niêm yết do làm tròn nghìn. |
+| `phan_khuc_gia` | Giá <80.000; 80.000≤giá≤200.000; giá>200.000 đồng. |
+| `nhom_danh_gia` | <3,0; [3,0;4,0); [4,0;4,5); ≥4,5; thiếu → Chưa biết. |
+| `nhom_giam_gia` | Mức niêm yết: [0;5], (5;15], (15;25], (25;40]. Kịch bản chỉ sinh tối đa 40%. |
+| `thang_nam`, `nam_ban`, `quy_ban` | Trích từ ngày; quý luôn kèm năm, ví dụ 2024Q1. |
+| `co_ngoai_lai_iqr` | True khi lượng > Q3 + 1,5×IQR trên tập đã cách ly lỗi; chỉ gắn cờ. |
+| `gia_ban_duoc_sua` | True khi giá thiếu/không dương được tính lại có căn cứ. |
+| `khoi_phuc_*` | Bảy cờ cho từng thuộc tính catalog: tên, thể loại, tác giả, NXB, năm, giá gốc, điểm. True khi ô thiếu được điền bằng giá trị catalog có thật trong kịch bản. |
 
-| Tên cột | Kiểu dữ liệu chuẩn | Ý nghĩa | Công thức / Quy tắc tính | Ví dụ |
-| :--- | :--- | :--- | :--- | :--- |
-| `ma_sach` | `category` / `str` | Mã định danh đầu sách | Giữ nguyên | `BK00123` |
-| `ten_sach` | `str` | Tên tựa sách | Chuẩn hóa khoảng trắng | `Đắc Nhân Tâm` |
-| `tac_gia` | `str` | Tên tác giả | Điền khuyết tật `"Không rõ tác giả"` | `Dale Carnegie` |
-| `the_loai` | `category` | Thể loại sách chuẩn hóa | Title case, xóa khoảng trắng thừa | `Kỹ Năng Sống` |
-| `nha_xuat_ban` | `category` | Nhà xuất bản chuẩn hóa | Title case, điền khuyết tật `"NXB Khác"` | `NXB Trẻ` |
-| `nam_xuat_ban` | `int64` | Năm xuất bản | Điền khuyết tật bằng trung vị (`median`) | `2020` |
-| `gia_goc` | `int64` | Giá niêm yết (VNĐ) | Giữ nguyên | `120000` |
-| `gia_ban` | `int64` | Giá bán thực tế (VNĐ) | Ép kiểu số, tính lại nếu bị âm/0: `gia_goc * (1 - giam_gia)` | `96000` |
-| `phan_tram_giam_gia`| `float64` | Phần trăm giảm giá (%) | Chuẩn hóa: `round((1 - gia_ban/gia_goc)*100, 1)` | `20.0` |
-| `so_luong_da_ban` | `int64` | Số lượng bán hợp lệ | Lọc bỏ ngoại lai phi lý (< 1 hoặc > ngưỡng IQR 99.5%) | `4` |
-| `doanh_thu` | `int64` | Tổng doanh thu đơn hàng (VNĐ) | `gia_ban * so_luong_da_ban` | `384000` |
-| `diem_danh_gia` | `float64` | Điểm đánh giá (1.0 - 5.0) | Điền trung bình thể loại (`genre mean`) | `4.5` |
-| `so_luot_danh_gia` | `int64` | Lượt đánh giá | Giữ nguyên kiểu nguyên | `45` |
-| `ngay_ban` | `datetime64[ns]`| Ngày ghi nhận đơn | Ép kiểu chuẩn datetime | `2024-11-11` |
-| `thang_ban` | `int32` | Tháng bán hàng (1 - 12) | Trích xuất từ `ngay_ban` | `11` |
-| `quy_ban` | `str` | Quý bán hàng trong năm | `Q1`, `Q2`, `Q3`, `Q4` | `Q4` |
-| `nam_ban` | `int32` | Năm phát sinh đơn | `2024`, `2025` | `2024` |
-| `thang_nam` | `str` | Chu kỳ Tháng - Năm | `YYYY-MM` | `2024-11` |
-| `thu_trong_tuan` | `str` | Thứ trong tuần | `Thứ Hai` đến `Chủ Nhật` | `Thứ Sáu` |
-| `kenh_ban` | `category` | Kênh phân phối | Chuẩn hóa danh mục | `Shopee Mall` |
-| `phan_khuc_gia` | `category` | Phân khúc giá trị sách | `< 80k: Giá rẻ`<br>`80k - 200k: Trung bình`<br>`> 200k: Cao cấp` | `Trung bình` |
-| `nhom_danh_gia` | `category` | Phân loại chất lượng đánh giá | `>= 4.5: Xuất sắc`<br>`4.0 - < 4.5: Tốt`<br>`3.0 - < 4.0: Trung bình`<br>`< 3.0: Thấp` | `Xuất sắc` |
+## Mẫu số và kết quả
+
+- Tỷ trọng nhóm: giá trị nhóm / giá trị toàn tập sau bộ lọc. Giữ nhóm không rõ trong mẫu số.
+- Giá bán bình quân theo cuốn: tổng giá trị / tổng cuốn, không phải trung bình không trọng số của dòng.
+- Tương quan cấp dòng dùng các dòng sạch; tương quan cấp sách nhóm một lần theo ma_sach.
+- `sensitivity_runs.csv`: 150 dòng, mỗi dòng một seed/kịch bản; `sensitivity_summary.csv`: R, mean, SD, MCSE, p025/p975. Các khoảng không là khoảng tin cậy thị trường.
+- `missing_sensitivity.csv`: kiểm tra che điểm một seed. MAE rỗng ở phương án giữ thiếu nghĩa không áp dụng, không phải lỗi xuất tệp.

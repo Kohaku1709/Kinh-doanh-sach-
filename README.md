@@ -1,123 +1,87 @@
-# DỰ ÁN: XÂY DỰNG BỘ DỮ LIỆU KINH DOANH SÁCH, XỬ LÝ, TRỰC QUAN HÓA VÀ RÚT RA CÁC Ý NGHĨA KINH DOANH
+# Kinh doanh sách: nghiên cứu mô phỏng có kiểm chứng
 
-Dự án phân tích dữ liệu toàn diện (End-to-End Data Analytics & Engineering) về hoạt động kinh doanh sách bán lẻ đa kênh tại thị trường Việt Nam giai đoạn 2024 - 2025.
+Đồ án Nhập môn Khoa học dữ liệu: xây dựng bộ dữ liệu, xử lý, phân tích khám phá, trực quan hóa và rút ra ý nghĩa trong phạm vi một nhà sách giả định.
 
----
+**Toàn bộ dữ liệu là mô phỏng.** Tên sách, tác giả, NXB và kênh bán đều giả lập; không phải dữ liệu hoặc thị phần của Việt Nam. Các tham số là giả định thiết kế, chưa được hiệu chỉnh theo dữ liệu doanh nghiệp. Mục tiêu thực hành là xây dựng quy trình tin cậy và biết giới hạn suy luận.
 
-## 1. CẤU TRÚC THƯ MỤC DỰ ÁN
+## Bắt đầu đọc
+
+- [Báo cáo PDF](report/bao_cao.pdf), [báo cáo HTML](report/bao_cao.html), [bản Markdown có thể sửa](report/bao_cao.md).
+- [Dashboard ngoại tuyến](charts/dashboard.html): tải về và mở bằng trình duyệt; bộ lọc năm/kênh cập nhật mọi KPI. GitHub không chạy HTML tương tác trực tiếp trong trang xem mã.
+- [Notebook đã chạy](notebooks/book_sales_analysis.ipynb).
+- [Quy trình nghiên cứu](docs/QUY-TRINH.md), [từ điển dữ liệu](data/data_dictionary.md), [đối soát bản cũ](docs/DOI-SOAT-BAN-CU.md).
+- [Việc nhóm cần hoàn thiện](docs/PHAN-VIEC-NHOM.md), [nhật ký thay đổi](CHANGELOG.md).
+
+## Câu hỏi và quy mô
+
+7 câu hỏi EDA về thể loại, mã sách, thời gian, giá/giảm giá, điểm sách, tương quan và cơ cấu kênh/phân khúc. Thêm hai câu hỏi kiểm chứng: phục hồi lỗi đúng đến đâu và kết quả phụ thuộc giả định thế nào?
+
+Kịch bản cơ sở: 300 sách, 10 thể loại, 5 kênh, 6.500 đơn một đầu sách trong 2024–2025. Mỗi đơn có một dòng; đây là giới hạn mô hình, không phải mô tả chung về đơn bán lẻ. Sau thêm bản sao: 6.660 dòng thô. Quy trình giữ 6.480 dòng, cách ly 20 mã nghiệp vụ (25 biến thể nguồn). Các số mới không so trực tiếp với bản cũ vì cơ chế dữ liệu đã được thiết kế lại.
+
+**Kết quả chính về phương pháp:** tám trường đối chiếu khớp dữ liệu chuẩn trên các dòng giữ lại; nhưng tổng kỳ vẫn thiếu do cách ly. Kết quả này không được gọi là “sạch 100%”. Giá trị cụ thể, phần trăm sai lệch và tổng EDA được sinh tự động trong `results/metrics.json` và báo cáo, tránh chép số thủ công.
+
+## Chạy lại (Windows / macOS / Linux)
+
+Đã kiểm thử với Python 3.12. Mở terminal tại thư mục chứa README này:
 
 ```text
-Datacrawl/
-├── data/
-│   ├── raw/
-│   │   └── book_sales_raw.csv           # Dữ liệu thô ban đầu (6,660 dòng, 14 cột)
-│   ├── processed/
-│   │   ├── book_sales_clean.csv         # Dữ liệu đã làm sạch & tạo đặc trưng (6,501 dòng, 22 cột)
-│   │   └── book_sales_clean.xlsx        # File Excel dữ liệu sạch chuẩn hóa
-│   └── data_dictionary.md               # Từ điển dữ liệu mô tả chi tiết tất cả các cột
-├── notebooks/
-│   └── book_sales_analysis.ipynb        # Jupyter Notebook hoàn chỉnh, chạy sạch từ đầu đến cuối
-├── src/
-│   ├── __init__.py
-│   ├── data_generator.py                # Mã nguồn sinh dữ liệu mô phỏng sát thực tế (Seed=42)
-│   ├── data_cleaner.py                  # Mã nguồn làm sạch, chuẩn hóa chuỗi, xử lý missing & ngoại lai
-│   ├── visualizer.py                    # Mã nguồn vẽ toàn bộ biểu đồ phân tích chuẩn tiếng Việt (PNG)
-│   └── dashboard_builder.py             # Mã nguồn tạo Dashboard HTML tương tác (Plotly + Tailwind)
-├── charts/
-│   ├── 01_the_loai_doanh_thu_so_luong.png
-│   ├── 02_top_10_sach_ban_chay.png
-│   ├── 03_top_10_tac_gia_nha_xuat_ban.png
-│   ├── 04_xu_huong_doanh_thu_thoi_gian.png
-│   ├── 05_tac_dong_giam_gia_va_gia_ban.png
-│   ├── 06_tuong_quan_diem_danh_gia_luong_ban.png
-│   ├── 07_ma_tran_tuong_quan.png
-│   ├── 08_co_cau_doanh_thu_phan_khuc_kenh_ban.png
-│   └── dashboard.html                   # Dashboard tương tác độc lập (Mở bằng trình duyệt bất kỳ)
-├── report/
-│   └── bao_cao.md                       # Báo cáo chuyên sâu 6 phần theo yêu cầu
-├── README.md                            # Hướng dẫn cài đặt và vận hành toàn bộ dự án
-└── requirements.txt                     # Danh sách các thư viện phụ thuộc
+python -m venv .venv
 ```
 
----
+Windows PowerShell:
 
-## 2. HƯỚNG DẪN CÀI ĐẶT MÔI TRƯỜNG
+```powershell
+.venv\Scripts\python.exe -m pip install -r requirements-lock.txt
+.venv\Scripts\python.exe run.py --replications 50
+.venv\Scripts\python.exe -m pytest -q
+.venv\Scripts\python.exe tools/execute_notebook.py
+.venv\Scripts\python.exe -m notebook notebooks/book_sales_analysis.ipynb
+```
 
-### 2.1. Yêu cầu hệ thống
-* **Python:** Phiên bản `>= 3.9` (Khuyến nghị Python 3.10, 3.11 hoặc 3.12/3.14).
-* Trình duyệt web (Chrome, Edge, Firefox) để mở Dashboard HTML.
-
-### 2.2. Cài đặt các thư viện cần thiết
-Mở terminal / PowerShell tại thư mục gốc của dự án (`Datacrawl/`) và chạy lệnh sau:
+macOS / Linux:
 
 ```bash
-pip install -r requirements.txt
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python run.py --replications 50
+.venv/bin/python -m pytest -q
+.venv/bin/python tools/execute_notebook.py
+.venv/bin/python -m notebook notebooks/book_sales_analysis.ipynb
 ```
 
-Các thư viện chính được sử dụng:
-* `pandas` & `numpy`: Xử lý, tính toán và làm sạch dữ liệu bảng.
-* `matplotlib` & `seaborn`: Vẽ đồ thị trực quan hóa tĩnh độ phân giải cao (300 DPI), hỗ trợ font tiếng Việt.
-* `plotly`: Xây dựng biểu đồ tương tác và dashboard điều hành.
-* `openpyxl`: Đọc và ghi file dữ liệu Excel `.xlsx`.
-* `nbformat` & `ipykernel`: Khởi tạo và thực thi Jupyter Notebook.
+`requirements-lock.txt` ghi môi trường Windows đã thử; `requirements.txt` liệt kê phụ thuộc trực tiếp đa nền tảng. Chưa xác nhận chạy thực tế trên macOS/Linux. Pipeline mặc định ghi lại dữ liệu và báo cáo sinh tự động. Nếu muốn bảo toàn một bản xuất, dùng `python run.py --out path/to/new-output --replications 50`. Không sửa trực tiếp báo cáo rồi chạy lại: nội dung báo cáo được quản lý tại `src/report_builder.py`.
 
----
+Có thể tăng `--replications` lên 200 để cải thiện độ chính xác Monte Carlo; bài bàn giao đã chạy 50 lần/kịch bản, không tuyên bố kết quả 200 lần. Cùng seed và cùng môi trường cho cùng dữ liệu; thời điểm/tên hệ thống trong thông tin kiểm tra có thể khác.
 
-## 3. HƯỚNG DẪN CHẠY LẠI TOÀN BỘ DỰ ÁN TỪ ĐẦU ĐẾN CUỐI
+## Luồng dữ liệu
 
-Bạn có thể chạy toàn bộ quy trình chỉ bằng các lệnh sau:
-
-### Bước 1: Khởi tạo dữ liệu thô (Giai đoạn 1)
-```bash
-python src/data_generator.py
+```text
+config → catalog + ground_truth → raw + nhãn lỗi
+                    catalog + raw → clean + nhật ký + cách ly
+           clean → bảng kết quả → biểu đồ / dashboard / báo cáo
+ground_truth + nhãn lỗi + clean → đối soát (chỉ ở giai đoạn đánh giá)
 ```
-*Kết quả:* Tạo file `data/raw/book_sales_raw.csv` gồm 6,660 dòng, bao quát 10 thể loại trong 24 tháng, có chứa các lỗi thực tế (trùng lặp, khuyết thiếu, định dạng sai).
 
-### Bước 2: Làm sạch và chuẩn hóa dữ liệu (Giai đoạn 2)
-```bash
-python src/data_cleaner.py
-```
-*Kết quả:* Làm sạch 100% missing values, loại bỏ 117 dòng trùng lặp, lọc 15 ngoại lai phi lý, tạo 8 đặc trưng mới và xuất ra `data/processed/book_sales_clean.csv` và `data/processed/book_sales_clean.xlsx`.
+`clean()` không nhận hoặc đọc ground_truth/nhãn lỗi. Chỉ danh mục giả định đáng tin được cung cấp cho bước khôi phục. Cần hiểu đây là giả định thuận lợi, không phải bằng chứng phục hồi hoàn hảo dữ liệu thật.
 
-### Bước 3: Tạo hệ thống biểu đồ PNG (Giai đoạn 3)
-```bash
-python src/visualizer.py
-```
-*Kết quả:* Xuất 8 biểu đồ định dạng PNG chất lượng cao vào thư mục `charts/`.
+## Thư mục
 
-### Bước 4: Tạo Dashboard HTML tương tác
-```bash
-python src/dashboard_builder.py
-```
-*Kết quả:* Xuất file `charts/dashboard.html`. Bạn chỉ cần click đúp vào file này để mở trên trình duyệt (Edge, Chrome) và trải nghiệm giao diện tương tác với đầy đủ thẻ KPI, bộ lọc hover và phóng to thu nhỏ.
+| Đường dẫn | Vai trò |
+|---|---|
+| `data/reference/` | Danh mục đầu vào và dữ liệu chuẩn chỉ dùng đánh giá |
+| `data/raw/` | Dữ liệu sau cài lỗi, chưa làm sạch |
+| `data/processed/` | CSV phân tích chuẩn duy nhất |
+| `data/audit/` | Nhãn lỗi, thay đổi ô, trạng thái từng dòng và cách ly |
+| `src/` | Mã dùng chung cho pipeline và notebook |
+| `results/` | Bảng kết quả, 150 lượt mô phỏng, metrics, hash |
+| `charts/` | 8 PNG và dashboard HTML tự chứa |
+| `report/` | Báo cáo PDF/HTML/Markdown từ cùng nội dung |
+| `tests/` | Kiểm tra các rủi ro dữ liệu cụ thể |
+| `docs/` | Phương pháp, nguồn, đối soát, kiểm tra, phần việc nhóm |
 
----
+CSV là dữ liệu chuẩn; bỏ bản Excel cũ khỏi bộ mới để tránh giữ thêm bản có nguy cơ lệch. Có thể mở CSV UTF-8 trong Excel nhưng không coi một workbook chỉnh thủ công là dữ liệu đầu vào pipeline.
 
-## 4. HƯỚNG DẪN MỞ VÀ CHẠY JUPYTER NOTEBOOK
+## Nguồn và trách nhiệm
 
-Để xem và chạy toàn bộ quy trình trong môi trường Notebook tương tác:
+Phương pháp tham khảo [Morris và cộng sự (2019)](https://pmc.ncbi.nlm.nih.gov/articles/PMC6492164/), [NIST Box Plot](https://www.itl.nist.gov/div898/handbook/eda/section3/boxplot.htm), [pandas.cut](https://pandas.pydata.org/docs/reference/api/pandas.cut.html) và [FAIR](https://www.gofair.foundation/fair-principles). Nguồn này không cung cấp các tham số thị trường cho mô phỏng. Chi tiết tại `docs/NGUON.md`.
 
-```bash
-jupyter notebook notebooks/book_sales_analysis.ipynb
-```
-Hoặc mở trực tiếp file `notebooks/book_sales_analysis.ipynb` bằng VS Code / Google Colab / JupyterLab. Notebook đã được chạy sẵn và lưu đầy đủ toàn bộ kết quả phân tích, đồ thị và bảng số liệu.
-
----
-
-## 5. TÓM TẮT KẾT QUẢ ĐỐI SOÁT DỮ LIỆU (BEFORE & AFTER)
-
-| Chỉ số | Dữ liệu thô ban đầu | Dữ liệu sạch sau xử lý | Thay đổi |
-| :--- | :---: | :---: | :--- |
-| **Số dòng** | 6,660 dòng | **6,501 dòng** | Loại 117 dòng trùng, 15 ngoại lai, 27 trùng sau chuẩn hóa |
-| **Số cột** | 14 cột | **22 cột** | Bổ sung 8 cột đặc trưng kinh doanh mới |
-| **Số dòng trùng lặp** | 117 dòng | **0 dòng** | Khử sạch 100% bản ghi trùng lặp |
-| **Số ô khuyết thiếu** | 370 ô | **0 ô** | Khử sạch 100% missing values bằng Median/Mean hợp lý |
-| **Định dạng số & chuỗi** | Lỗi VNĐ, âm, chuỗi text lệch | Chuẩn hóa toàn diện | Ép kiểu số nguyên VNĐ, chuẩn Title Case |
-
----
-
-## 6. BA INSIGHT KINH DOANH NỔI BẬT NHẤT
-
-1. **Thương mại điện tử & Kênh xã hội chiếm thế thượng phong (59.9% Doanh số):** Shopee Mall (2.06 tỷ VNĐ, 36.0%) và TikTok Shop (1.37 tỷ VNĐ, 23.9%) là hai kênh bán chủ lực của toàn hệ thống, vượt trội hoàn toàn so với chuỗi Cửa hàng Offline truyền thống (12.4%).
-2. **"Điểm ngọt" định giá và Đòn bẩy khuyến mãi:** Phân khúc sách giá trung bình từ 80,000 đến 200,000 VNĐ đóng góp tới 60.6% doanh thu. Các mức chiết khấu hiển thị từ 20% - 30% tạo ra điểm bùng nổ sức mua mạnh nhất (lượng bán tăng gấp 2.1 lần so với giảm giá nhẹ).
-3. **Hiệu ứng mùa vụ tập trung cao độ:** Doanh thu Quý 4 bùng nổ mạnh mẽ (đặc biệt là đợt Mega Sale Tháng 11 và 12 đạt đỉnh trên 338 triệu VNĐ/tháng, tăng 82.7% so với tháng đáy), cùng điểm rơi phụ vào mùa Tựu trường Tháng 8 - 9.
+Bản sửa kế thừa đề tài và cấu trúc từ [Kohaku1709/Kinh-doanh-sach-](https://github.com/Kohaku1709/Kinh-doanh-sach-/tree/6bfe691904b4d721ee1a1743509f6b581b70ce81), commit `6bfe691904b4d721ee1a1743509f6b581b70ce81`. Không tự gán giấy phép mới cho tài sản của nhóm; chủ repository quyết định điều khoản sử dụng trước khi chia sẻ lại. Bản cập nhật được đưa vào lịch sử repository; chưa có xác nhận nộp bài. Các công cụ hỗ trợ AI đã tham gia sửa mã, phân tích và soạn báo cáo; nhóm cần kiểm tra và khai báo theo quy định của lớp.

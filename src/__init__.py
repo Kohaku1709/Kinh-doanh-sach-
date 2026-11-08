@@ -1,1 +1,1 @@
-# Package initialization for src
+"""Book retail simulation and auditable exploratory analysis."""

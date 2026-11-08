@@ -1,0 +1,2 @@
+# Preserve the generated artifacts byte-for-byte for manifest verification.
+* -text
